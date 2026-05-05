@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300">
+  <rect width="420" height="300" fill="#090909"/>
+  <rect x="76" y="34" width="206" height="232" rx="10" fill="#ffd21f"/>
+  <rect x="104" y="60" width="150" height="176" fill="#101010"/>
+  <text x="124" y="112" fill="#ffd21f" font-family="Arial" font-size="28" font-weight="900">BANCO</text>
+  <text x="124" y="150" fill="#fff" font-family="Arial" font-size="26" font-weight="900">DE DADOS</text>
+  <ellipse cx="180" cy="202" rx="48" ry="14" fill="#ffd21f"/>
+  <path d="M132 202v26c0 8 96 8 96 0v-26" fill="none" stroke="#ffd21f" stroke-width="6"/>
+</svg>

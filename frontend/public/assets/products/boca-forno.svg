@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300">
+  <rect width="420" height="300" fill="#090909"/>
+  <circle cx="160" cy="142" r="76" fill="#ffd21f"/>
+  <path d="M102 146h116l-18 48H120z" fill="#111"/>
+  <path d="M122 124h78c-8-28-70-28-78 0z" fill="#111"/>
+  <text x="92" y="248" fill="#ffd21f" font-family="Arial" font-size="30" font-weight="900">BOCA DO FORNO</text>
+</svg>

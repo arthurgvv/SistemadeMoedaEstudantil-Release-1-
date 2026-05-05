@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300">
+  <rect width="420" height="300" fill="#090909"/>
+  <rect x="76" y="38" width="206" height="224" rx="12" fill="#151515" stroke="#ffd21f" stroke-width="6"/>
+  <text x="108" y="118" fill="#ffd21f" font-family="Arial" font-size="34" font-weight="800">PYTHON</text>
+  <text x="108" y="158" fill="#fff" font-family="Arial" font-size="25" font-weight="700">PARA DADOS</text>
+  <rect x="108" y="184" width="130" height="12" fill="#ffd21f"/>
+  <rect x="108" y="208" width="92" height="12" fill="#ffd21f" opacity=".72"/>
+</svg>

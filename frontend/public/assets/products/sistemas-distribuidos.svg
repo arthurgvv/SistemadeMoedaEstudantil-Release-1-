@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300">
+  <rect width="420" height="300" fill="#090909"/>
+  <rect x="72" y="36" width="214" height="228" rx="12" fill="#141414" stroke="#ffd21f" stroke-width="5"/>
+  <text x="104" y="112" fill="#ffd21f" font-family="Arial" font-size="28" font-weight="900">SISTEMAS</text>
+  <text x="104" y="150" fill="#fff" font-family="Arial" font-size="24" font-weight="800">DISTRIBUIDOS</text>
+  <circle cx="126" cy="206" r="14" fill="#ffd21f"/>
+  <circle cx="178" cy="186" r="14" fill="#ffd21f"/>
+  <circle cx="230" cy="214" r="14" fill="#ffd21f"/>
+  <path d="M140 200l24-10M192 194l24 12" stroke="#ffd21f" stroke-width="5"/>
+</svg>

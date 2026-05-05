@@ -1,0 +1,98 @@
+package br.com.emoney.service;
+
+import br.com.emoney.dto.RegisterStudentRequest;
+import br.com.emoney.dto.StudentResponse;
+import br.com.emoney.dto.UpdateStudentRequest;
+import br.com.emoney.model.Student;
+import br.com.emoney.repository.StudentRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.UUID;
+
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+@Service
+public class StudentService {
+    private final StudentRepository studentRepository;
+    private final ValidationService validationService;
+
+    public StudentService(StudentRepository studentRepository, ValidationService validationService) {
+        this.studentRepository = studentRepository;
+        this.validationService = validationService;
+    }
+
+    public List<StudentResponse> list() {
+        return studentRepository.findAll().stream().map(StudentResponse::new).toList();
+    }
+
+    public Student findEntityById(UUID id) {
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Aluno nao encontrado."));
+    }
+
+    public StudentResponse findById(UUID id) {
+        return new StudentResponse(findEntityById(id));
+    }
+
+    public Student create(RegisterStudentRequest request) {
+        String email = validationService.text(request.getEmail(), "Email").toLowerCase();
+        String cpf = validationService.cpf(request.getCpf());
+        String rg = validationService.rg(request.getRg());
+
+        if (studentRepository.findByEmail(email).isPresent()) {
+            throw new ResponseStatusException(CONFLICT, "Ja existe aluno com este email.");
+        }
+
+        if (studentRepository.existsByCpf(cpf)) {
+            throw new ResponseStatusException(CONFLICT, "Ja existe aluno com este CPF.");
+        }
+
+        Student student = new Student(
+                validationService.text(request.getNome(), "Nome"),
+                email,
+                cpf,
+                rg,
+                validationService.text(request.getEndereco(), "Endereco"),
+                validationService.instituicao(request.getInstituicao()),
+                validationService.text(request.getCurso(), "Curso"),
+                validationService.senha(request.getSenha())
+        );
+
+        return studentRepository.save(student);
+    }
+
+    public Student authenticate(String email, String senha) {
+        Student student = studentRepository.findByEmail(validationService.text(email, "Email").toLowerCase())
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Email ou senha invalidos."));
+
+        if (!student.getSenha().equals(senha)) {
+            throw new ResponseStatusException(NOT_FOUND, "Email ou senha invalidos.");
+        }
+
+        return student;
+    }
+
+    public StudentResponse update(UUID id, UpdateStudentRequest request) {
+        Student student = findEntityById(id);
+        student.setNome(validationService.text(request.getNome(), "Nome"));
+        student.setEmail(validationService.text(request.getEmail(), "Email").toLowerCase());
+        student.setCpf(validationService.cpf(request.getCpf()));
+        student.setRg(validationService.rg(request.getRg()));
+        student.setEndereco(validationService.text(request.getEndereco(), "Endereco"));
+        student.setInstituicao(validationService.instituicao(request.getInstituicao()));
+        student.setCurso(validationService.text(request.getCurso(), "Curso"));
+
+        if (request.getSenha() != null && !request.getSenha().isBlank()) {
+            student.setSenha(validationService.senha(request.getSenha()));
+        }
+
+        return new StudentResponse(studentRepository.save(student));
+    }
+
+    public Student save(Student student) {
+        return studentRepository.save(student);
+    }
+}

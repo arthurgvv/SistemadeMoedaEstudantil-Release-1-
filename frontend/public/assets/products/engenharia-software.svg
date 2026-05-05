@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300">
+  <rect width="420" height="300" fill="#090909"/>
+  <rect x="72" y="36" width="214" height="228" rx="10" fill="#ffd21f"/>
+  <rect x="98" y="64" width="162" height="172" fill="#101010"/>
+  <text x="116" y="112" fill="#ffd21f" font-family="Arial" font-size="24" font-weight="800">ENG.</text>
+  <text x="116" y="148" fill="#fff" font-family="Arial" font-size="23" font-weight="800">SOFTWARE</text>
+  <path d="M126 196h92M126 216h60" stroke="#ffd21f" stroke-width="10"/>
+</svg>

@@ -27,6 +27,13 @@ public class StudentRepository {
                 .findFirst();
     }
 
+    public List<Student> findByInstitutionIdAndCurso(UUID institutionId, String curso) {
+        return students.values().stream()
+                .filter(student -> institutionId != null && institutionId.equals(student.getInstitutionId()))
+                .filter(student -> curso.equals(student.getCurso()))
+                .toList();
+    }
+
     public boolean existsByCpf(String cpf) {
         return students.values().stream().anyMatch(student -> student.getCpf().equals(cpf));
     }

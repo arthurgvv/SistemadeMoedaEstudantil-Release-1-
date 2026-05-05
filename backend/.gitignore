@@ -1,3 +1,4 @@
 target/
 spring.log
 spring.err
+.m2/

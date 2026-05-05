@@ -1,0 +1,65 @@
+package br.com.emoney.controller;
+
+import br.com.emoney.dto.InstitutionResponse;
+import br.com.emoney.dto.ProfessorResponse;
+import br.com.emoney.dto.RegisterProfessorRequest;
+import br.com.emoney.dto.SemesterStartResponse;
+import br.com.emoney.model.AuthSession;
+import br.com.emoney.model.UserRole;
+import br.com.emoney.service.AuthService;
+import br.com.emoney.service.InstitutionService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+
+@RestController
+@RequestMapping("/api/institutions")
+public class InstitutionController {
+    private final AuthService authService;
+    private final InstitutionService institutionService;
+
+    public InstitutionController(AuthService authService, InstitutionService institutionService) {
+        this.authService = authService;
+        this.institutionService = institutionService;
+    }
+
+    @GetMapping("/me")
+    public InstitutionResponse me(@RequestHeader("Authorization") String authorization) {
+        AuthSession session = requireInstitutionSession(authorization);
+        return institutionService.findById(session.getUserId());
+    }
+
+    @GetMapping("/me/professors")
+    public List<ProfessorResponse> professors(@RequestHeader("Authorization") String authorization) {
+        AuthSession session = requireInstitutionSession(authorization);
+        return institutionService.listProfessors(session.getUserId());
+    }
+
+    @PostMapping("/me/professors")
+    public ProfessorResponse addProfessor(@RequestHeader("Authorization") String authorization, @RequestBody RegisterProfessorRequest request) {
+        AuthSession session = requireInstitutionSession(authorization);
+        return new ProfessorResponse(institutionService.createProfessor(session.getUserId(), request, false));
+    }
+
+    @PostMapping("/me/semester/start")
+    public SemesterStartResponse startSemester(@RequestHeader("Authorization") String authorization) {
+        AuthSession session = requireInstitutionSession(authorization);
+        return institutionService.startSemester(session.getUserId());
+    }
+
+    private AuthSession requireInstitutionSession(String authorization) {
+        AuthSession session = authService.requireSession(authorization);
+        if (session.getRole() != UserRole.INSTITUTION) {
+            throw new ResponseStatusException(FORBIDDEN, "Apenas instituicoes podem acessar esta area.");
+        }
+        return session;
+    }
+}

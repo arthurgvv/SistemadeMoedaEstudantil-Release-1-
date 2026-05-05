@@ -17,6 +17,16 @@ function Navbar({ activePage, onChangePage, onLogout, role }) {
             </button>
           </>
         )}
+        {role === "INSTITUTION" && (
+          <>
+            <button className={activePage === "overview" ? "is-active" : ""} type="button" onClick={() => onChangePage("overview")}>
+              Painel
+            </button>
+            <button className={activePage === "professors" ? "is-active" : ""} type="button" onClick={() => onChangePage("professors")}>
+              Professores
+            </button>
+          </>
+        )}
         <button type="button" onClick={onLogout}>Sair</button>
       </div>
     </nav>

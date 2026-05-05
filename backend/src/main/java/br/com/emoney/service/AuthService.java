@@ -2,13 +2,16 @@ package br.com.emoney.service;
 
 import br.com.emoney.dto.AuthResponse;
 import br.com.emoney.dto.CompanyResponse;
+import br.com.emoney.dto.InstitutionResponse;
 import br.com.emoney.dto.LoginRequest;
 import br.com.emoney.dto.ProfessorResponse;
+import br.com.emoney.dto.RegisterInstitutionRequest;
 import br.com.emoney.dto.RegisterCompanyRequest;
 import br.com.emoney.dto.RegisterStudentRequest;
 import br.com.emoney.dto.StudentResponse;
 import br.com.emoney.model.AuthSession;
 import br.com.emoney.model.Company;
+import br.com.emoney.model.Institution;
 import br.com.emoney.model.Professor;
 import br.com.emoney.model.Student;
 import br.com.emoney.model.UserRole;
@@ -23,12 +26,14 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public class AuthService {
     private final StudentService studentService;
     private final CompanyService companyService;
+    private final InstitutionService institutionService;
     private final ProfessorRepository professorRepository;
     private final SessionRepository sessionRepository;
 
-    public AuthService(StudentService studentService, CompanyService companyService, ProfessorRepository professorRepository, SessionRepository sessionRepository) {
+    public AuthService(StudentService studentService, CompanyService companyService, InstitutionService institutionService, ProfessorRepository professorRepository, SessionRepository sessionRepository) {
         this.studentService = studentService;
         this.companyService = companyService;
+        this.institutionService = institutionService;
         this.professorRepository = professorRepository;
         this.sessionRepository = sessionRepository;
     }
@@ -45,11 +50,25 @@ public class AuthService {
         return new AuthResponse(session.getToken(), UserRole.COMPANY, new CompanyResponse(company));
     }
 
+    public AuthResponse registerInstitution(RegisterInstitutionRequest request) {
+        Institution institution = institutionService.create(request);
+        AuthSession session = sessionRepository.create(institution.getId(), UserRole.INSTITUTION);
+        return new AuthResponse(session.getToken(), UserRole.INSTITUTION, institutionService.findById(institution.getId()));
+    }
+
     public AuthResponse login(LoginRequest request) {
         Professor professor = professorRepository.findByEmail(request.getEmail()).orElse(null);
         if (professor != null && professor.getSenha().equals(request.getSenha())) {
             AuthSession session = sessionRepository.create(professor.getId(), UserRole.PROFESSOR);
             return new AuthResponse(session.getToken(), UserRole.PROFESSOR, new ProfessorResponse(professor));
+        }
+
+        try {
+            Institution institution = institutionService.authenticate(request.getEmail(), request.getSenha());
+            AuthSession session = sessionRepository.create(institution.getId(), UserRole.INSTITUTION);
+            return new AuthResponse(session.getToken(), UserRole.INSTITUTION, new InstitutionResponse(institution, institutionService.listProfessors(institution.getId())));
+        } catch (ResponseStatusException ignored) {
+            // Continua para tentar autenticar como empresa.
         }
 
         try {
@@ -81,6 +100,10 @@ public class AuthService {
 
         if (session.getRole() == UserRole.COMPANY) {
             return new AuthResponse(session.getToken(), UserRole.COMPANY, companyService.findById(session.getUserId()));
+        }
+
+        if (session.getRole() == UserRole.INSTITUTION) {
+            return new AuthResponse(session.getToken(), UserRole.INSTITUTION, institutionService.findById(session.getUserId()));
         }
 
         return new AuthResponse(session.getToken(), UserRole.STUDENT, studentService.findById(session.getUserId()));

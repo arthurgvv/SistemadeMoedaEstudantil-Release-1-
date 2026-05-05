@@ -23,6 +23,15 @@ export const authService = {
     return session;
   },
 
+  async registerInstitution(payload) {
+    const session = await apiRequest("/auth/institutions/register", {
+      method: "POST",
+      body: payload,
+    });
+    saveSession(session);
+    return session;
+  },
+
   async login(payload) {
     const session = await apiRequest("/auth/login", {
       method: "POST",

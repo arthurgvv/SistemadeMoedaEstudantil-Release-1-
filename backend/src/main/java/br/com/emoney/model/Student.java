@@ -10,10 +10,12 @@ public class Student {
     private String cpf;
     private String rg;
     private String endereco;
+    private UUID institutionId;
     private String instituicao;
     private String curso;
     private String senha;
     private int saldoMoedas;
+    private String ultimoAviso;
     private LocalDateTime criadoEm;
 
     public Student() {
@@ -30,6 +32,7 @@ public class Student {
         this.curso = curso;
         this.senha = senha;
         this.saldoMoedas = 0;
+        this.ultimoAviso = "";
         this.criadoEm = LocalDateTime.now();
     }
 
@@ -81,6 +84,14 @@ public class Student {
         this.endereco = endereco;
     }
 
+    public UUID getInstitutionId() {
+        return institutionId;
+    }
+
+    public void setInstitutionId(UUID institutionId) {
+        this.institutionId = institutionId;
+    }
+
     public String getInstituicao() {
         return instituicao;
     }
@@ -111,6 +122,14 @@ public class Student {
 
     public void setSaldoMoedas(int saldoMoedas) {
         this.saldoMoedas = saldoMoedas;
+    }
+
+    public String getUltimoAviso() {
+        return ultimoAviso;
+    }
+
+    public void setUltimoAviso(String ultimoAviso) {
+        this.ultimoAviso = ultimoAviso;
     }
 
     public LocalDateTime getCriadoEm() {

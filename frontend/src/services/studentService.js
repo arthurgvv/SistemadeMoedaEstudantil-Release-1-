@@ -9,6 +9,10 @@ export const studentService = {
     return apiRequest("/students/institutions");
   },
 
+  courses() {
+    return apiRequest("/catalog/courses");
+  },
+
   updateMe(payload) {
     return apiRequest("/students/me", {
       method: "PUT",

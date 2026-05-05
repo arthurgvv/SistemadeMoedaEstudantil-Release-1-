@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public class StudentResponse {
     private UUID id;
+    private UUID institutionId;
     private String nome;
     private String email;
     private String cpf;
@@ -15,10 +16,12 @@ public class StudentResponse {
     private String instituicao;
     private String curso;
     private int saldoMoedas;
+    private String ultimoAviso;
     private LocalDateTime criadoEm;
 
     public StudentResponse(Student student) {
         this.id = student.getId();
+        this.institutionId = student.getInstitutionId();
         this.nome = student.getNome();
         this.email = student.getEmail();
         this.cpf = student.getCpf();
@@ -27,6 +30,7 @@ public class StudentResponse {
         this.instituicao = student.getInstituicao();
         this.curso = student.getCurso();
         this.saldoMoedas = student.getSaldoMoedas();
+        this.ultimoAviso = student.getUltimoAviso();
         this.criadoEm = student.getCriadoEm();
     }
 
@@ -36,6 +40,10 @@ public class StudentResponse {
 
     public String getNome() {
         return nome;
+    }
+
+    public UUID getInstitutionId() {
+        return institutionId;
     }
 
     public String getEmail() {
@@ -64,6 +72,10 @@ public class StudentResponse {
 
     public int getSaldoMoedas() {
         return saldoMoedas;
+    }
+
+    public String getUltimoAviso() {
+        return ultimoAviso;
     }
 
     public LocalDateTime getCriadoEm() {

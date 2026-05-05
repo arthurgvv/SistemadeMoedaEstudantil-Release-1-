@@ -3,7 +3,9 @@ package br.com.emoney.service;
 import br.com.emoney.dto.RegisterStudentRequest;
 import br.com.emoney.dto.StudentResponse;
 import br.com.emoney.dto.UpdateStudentRequest;
+import br.com.emoney.model.Institution;
 import br.com.emoney.model.Student;
+import br.com.emoney.repository.InstitutionRepository;
 import br.com.emoney.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,10 +20,12 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class StudentService {
     private final StudentRepository studentRepository;
     private final ValidationService validationService;
+    private final InstitutionRepository institutionRepository;
 
-    public StudentService(StudentRepository studentRepository, ValidationService validationService) {
+    public StudentService(StudentRepository studentRepository, ValidationService validationService, InstitutionRepository institutionRepository) {
         this.studentRepository = studentRepository;
         this.validationService = validationService;
+        this.institutionRepository = institutionRepository;
     }
 
     public List<StudentResponse> list() {
@@ -56,10 +60,11 @@ public class StudentService {
                 cpf,
                 rg,
                 validationService.text(request.getEndereco(), "Endereco"),
-                validationService.instituicao(request.getInstituicao()),
-                validationService.text(request.getCurso(), "Curso"),
+                resolveInstitutionName(request.getInstituicao()),
+                validationService.curso(request.getCurso()),
                 validationService.senha(request.getSenha())
         );
+        student.setInstitutionId(resolveInstitutionId(request.getInstituicao()));
 
         return studentRepository.save(student);
     }
@@ -82,8 +87,9 @@ public class StudentService {
         student.setCpf(validationService.cpf(request.getCpf()));
         student.setRg(validationService.rg(request.getRg()));
         student.setEndereco(validationService.text(request.getEndereco(), "Endereco"));
-        student.setInstituicao(validationService.instituicao(request.getInstituicao()));
-        student.setCurso(validationService.text(request.getCurso(), "Curso"));
+        student.setInstituicao(resolveInstitutionName(request.getInstituicao()));
+        student.setInstitutionId(resolveInstitutionId(request.getInstituicao()));
+        student.setCurso(validationService.curso(request.getCurso()));
 
         if (request.getSenha() != null && !request.getSenha().isBlank()) {
             student.setSenha(validationService.senha(request.getSenha()));
@@ -94,5 +100,27 @@ public class StudentService {
 
     public Student save(Student student) {
         return studentRepository.save(student);
+    }
+
+    public List<StudentResponse> listByInstitutionAndCourse(UUID institutionId, String course) {
+        return studentRepository.findByInstitutionIdAndCurso(institutionId, validationService.curso(course)).stream()
+                .map(StudentResponse::new)
+                .toList();
+    }
+
+    private UUID resolveInstitutionId(String institutionName) {
+        return findInstitutionByName(institutionName).getId();
+    }
+
+    private String resolveInstitutionName(String institutionName) {
+        return findInstitutionByName(institutionName).getNome();
+    }
+
+    private Institution findInstitutionByName(String institutionName) {
+        String normalizedName = validationService.instituicao(institutionName);
+        return institutionRepository.findAll().stream()
+                .filter(institution -> institution.getNome().equalsIgnoreCase(normalizedName))
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Instituicao de ensino nao cadastrada."));
     }
 }

@@ -9,7 +9,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class ValidationService {
-    private static final List<String> INSTITUICOES = List.of(
+    private static final List<String> INSTITUICOES_LEGADAS = List.of(
             "PUC Minas",
             "PUC Campinas",
             "PUC Rio",
@@ -18,9 +18,25 @@ public class ValidationService {
             "PUC Goias",
             "PUC Rio Grande do Sul"
     );
+    private static final List<String> CURSOS = List.of(
+            "Administracao",
+            "Arquitetura e Urbanismo",
+            "Ciencia da Computacao",
+            "Direito",
+            "Engenharia Civil",
+            "Engenharia de Software",
+            "Medicina",
+            "Psicologia",
+            "Publicidade e Propaganda",
+            "Sistemas de Informacao"
+    );
+
+    public List<String> cursos() {
+        return CURSOS;
+    }
 
     public List<String> instituicoes() {
-        return INSTITUICOES;
+        return INSTITUICOES_LEGADAS;
     }
 
     public String cpf(String value) {
@@ -55,12 +71,23 @@ public class ValidationService {
         return password;
     }
 
-    public String instituicao(String value) {
-        String instituicao = text(value, "Instituicao de ensino");
-        if (!INSTITUICOES.contains(instituicao)) {
-            throw new ResponseStatusException(BAD_REQUEST, "Instituicao de ensino nao cadastrada.");
+    public String curso(String value) {
+        String curso = text(value, "Curso");
+        if (!CURSOS.contains(curso)) {
+            throw new ResponseStatusException(BAD_REQUEST, "Curso nao cadastrado.");
         }
-        return instituicao;
+        return curso;
+    }
+
+    public List<String> cursos(List<String> values) {
+        if (values == null || values.isEmpty()) {
+            throw new ResponseStatusException(BAD_REQUEST, "Professor deve possuir pelo menos um curso.");
+        }
+        return values.stream().map(this::curso).distinct().toList();
+    }
+
+    public String instituicao(String value) {
+        return text(value, "Instituicao de ensino");
     }
 
     public String text(String value, String fieldName) {

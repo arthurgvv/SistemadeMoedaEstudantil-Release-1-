@@ -1,9 +1,9 @@
-function BalanceBanner({ saldo }) {
+function BalanceBanner({ saldo, title = "Saldo disponivel", subtitle = "moedas" }) {
   return (
     <section className="balance-center">
-      <span>Saldo disponivel</span>
+      <span>{title}</span>
       <strong>{Number(saldo || 0).toLocaleString("pt-BR")}</strong>
-      <p>moedas</p>
+      <p>{subtitle}</p>
     </section>
   );
 }

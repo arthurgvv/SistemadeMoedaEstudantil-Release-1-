@@ -33,6 +33,12 @@ export function useAuth({ onToast }) {
     onToast({ message: "Empresa cadastrada com sucesso.", type: "success" });
   }
 
+  async function registerInstitution(payload) {
+    const nextSession = await authService.registerInstitution(payload);
+    setSession(nextSession);
+    onToast({ message: "Instituicao cadastrada com sucesso.", type: "success" });
+  }
+
   async function login(payload) {
     const nextSession = await authService.login(payload);
     setSession(nextSession);
@@ -60,6 +66,7 @@ export function useAuth({ onToast }) {
     logout,
     register,
     registerCompany,
+    registerInstitution,
     updateUser,
   };
 }

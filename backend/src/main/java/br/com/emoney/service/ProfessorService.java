@@ -30,13 +30,17 @@ public class ProfessorService {
         this.validationService = validationService;
     }
 
+    public Professor findEntityById(java.util.UUID professorId) {
+        return professorRepository.findById(professorId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Professor nao encontrado."));
+    }
+
     public ProfessorResponse transfer(AuthSession session, TransferCoinsRequest request) {
         if (session.getRole() != UserRole.PROFESSOR) {
             throw new ResponseStatusException(FORBIDDEN, "Apenas professores podem enviar moedas.");
         }
 
-        Professor professor = professorRepository.findById(session.getUserId())
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Professor nao encontrado."));
+        Professor professor = findEntityById(session.getUserId());
 
         if (request.getQuantidade() <= 0) {
             throw new ResponseStatusException(BAD_REQUEST, "Quantidade deve ser maior que zero.");
@@ -49,8 +53,18 @@ public class ProfessorService {
         }
 
         Student student = studentService.findEntityById(request.getStudentId());
+        if (professor.getInstitutionId() == null
+                || student.getInstitutionId() == null
+                || !professor.getInstitutionId().equals(student.getInstitutionId())
+                || professor.getCursos() == null
+                || !professor.getCursos().contains(student.getCurso())) {
+            throw new ResponseStatusException(BAD_REQUEST, "Professor so pode enviar moedas para alunos dos cursos atribuidos.");
+        }
+
         professor.setSaldoMoedas(professor.getSaldoMoedas() - request.getQuantidade());
         student.setSaldoMoedas(student.getSaldoMoedas() + request.getQuantidade());
+        professor.setUltimoAviso("Transferencia realizada com sucesso.");
+        student.setUltimoAviso("Voce recebeu " + request.getQuantidade() + " moedas. Motivo: " + motivo);
 
         professorRepository.save(professor);
         studentService.save(student);

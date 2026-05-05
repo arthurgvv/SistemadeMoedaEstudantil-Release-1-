@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AccountForm from "../components/AccountForm.jsx";
 import BalanceBanner from "../components/BalanceBanner.jsx";
 import Navbar from "../components/Navbar.jsx";
@@ -8,6 +8,12 @@ import { useProducts } from "../hooks/useProducts.js";
 function StudentPage({ user, onLogout, onUpdateUser, onToast }) {
   const [activePage, setActivePage] = useState("products");
   const { products } = useProducts();
+
+  useEffect(() => {
+    if (user.ultimoAviso) {
+      onToast({ message: user.ultimoAviso, type: "success" });
+    }
+  }, [user.ultimoAviso, onToast]);
 
   return (
     <div className="app-shell">

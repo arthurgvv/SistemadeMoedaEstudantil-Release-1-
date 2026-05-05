@@ -16,10 +16,12 @@ const emptyForm = {
 function AccountForm({ user, onSave, onToast }) {
   const [form, setForm] = useState({ ...emptyForm, ...user, senha: "" });
   const [institutions, setInstitutions] = useState(DEFAULT_INSTITUTIONS);
+  const [courses, setCourses] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     studentService.institutions().then((data) => setInstitutions(mergeInstitutions(data))).catch(() => setInstitutions(DEFAULT_INSTITUTIONS));
+    studentService.courses().then(setCourses).catch(() => setCourses([]));
   }, []);
 
   async function handleSubmit(event) {
@@ -99,7 +101,12 @@ function AccountForm({ user, onSave, onToast }) {
         </label>
         <label>
           Curso
-          <input value={form.curso} onChange={(event) => update("curso", event.target.value)} required />
+          <select value={form.curso} onChange={(event) => update("curso", event.target.value)} required>
+            <option value="">Selecione</option>
+            {courses.map((course) => (
+              <option key={course} value={course}>{course}</option>
+            ))}
+          </select>
         </label>
         <label>
           Nova senha

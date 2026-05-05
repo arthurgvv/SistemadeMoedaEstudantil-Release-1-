@@ -4,8 +4,8 @@ import br.com.emoney.dto.StudentResponse;
 import br.com.emoney.dto.UpdateStudentRequest;
 import br.com.emoney.model.AuthSession;
 import br.com.emoney.service.AuthService;
+import br.com.emoney.service.InstitutionService;
 import br.com.emoney.service.StudentService;
-import br.com.emoney.service.ValidationService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,12 +20,12 @@ import java.util.List;
 public class StudentController {
     private final StudentService studentService;
     private final AuthService authService;
-    private final ValidationService validationService;
+    private final InstitutionService institutionService;
 
-    public StudentController(StudentService studentService, AuthService authService, ValidationService validationService) {
+    public StudentController(StudentService studentService, AuthService authService, InstitutionService institutionService) {
         this.studentService = studentService;
         this.authService = authService;
-        this.validationService = validationService;
+        this.institutionService = institutionService;
     }
 
     @GetMapping
@@ -41,6 +41,6 @@ public class StudentController {
 
     @GetMapping("/institutions")
     public List<String> institutions() {
-        return validationService.instituicoes();
+        return institutionService.listInstitutionNames();
     }
 }

@@ -2,6 +2,7 @@ package br.com.emoney.controller;
 
 import br.com.emoney.dto.AuthResponse;
 import br.com.emoney.dto.LoginRequest;
+import br.com.emoney.dto.RegisterInstitutionRequest;
 import br.com.emoney.dto.RegisterCompanyRequest;
 import br.com.emoney.dto.RegisterStudentRequest;
 import br.com.emoney.service.AuthService;
@@ -29,6 +30,11 @@ public class AuthController {
     @PostMapping("/companies/register")
     public AuthResponse registerCompany(@RequestBody RegisterCompanyRequest request) {
         return authService.registerCompany(request);
+    }
+
+    @PostMapping("/institutions/register")
+    public AuthResponse registerInstitution(@RequestBody RegisterInstitutionRequest request) {
+        return authService.registerInstitution(request);
     }
 
     @PostMapping("/login")

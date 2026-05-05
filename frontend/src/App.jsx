@@ -3,6 +3,7 @@ import Toast from "./components/Toast.jsx";
 import { useAuth } from "./hooks/useAuth.js";
 import AuthPage from "./pages/AuthPage.jsx";
 import CompanyPage from "./pages/CompanyPage.jsx";
+import InstitutionPage from "./pages/InstitutionPage.jsx";
 import ProfessorPage from "./pages/ProfessorPage.jsx";
 import StudentPage from "./pages/StudentPage.jsx";
 
@@ -21,6 +22,14 @@ function App() {
   async function handleCompanyRegister(payload) {
     try {
       await auth.registerCompany(payload);
+    } catch (error) {
+      setToast({ message: error.message, type: "error" });
+    }
+  }
+
+  async function handleInstitutionRegister(payload) {
+    try {
+      await auth.registerInstitution(payload);
     } catch (error) {
       setToast({ message: error.message, type: "error" });
     }
@@ -45,7 +54,7 @@ function App() {
   if (!auth.loggedIn) {
     return (
       <>
-        <AuthPage onLogin={handleLogin} onRegister={handleRegister} onCompanyRegister={handleCompanyRegister} />
+        <AuthPage onLogin={handleLogin} onRegister={handleRegister} onCompanyRegister={handleCompanyRegister} onInstitutionRegister={handleInstitutionRegister} />
         <Toast toast={toast} onClose={() => setToast(null)} />
       </>
     );
@@ -54,6 +63,8 @@ function App() {
   const dashboard =
     auth.role === "PROFESSOR" ? (
       <ProfessorPage user={auth.user} onLogout={auth.logout} onUpdateUser={auth.updateUser} onToast={setToast} />
+    ) : auth.role === "INSTITUTION" ? (
+      <InstitutionPage user={auth.user} onLogout={auth.logout} onUpdateUser={auth.updateUser} onToast={setToast} />
     ) : auth.role === "COMPANY" ? (
       <CompanyPage user={auth.user} onLogout={auth.logout} onToast={setToast} />
     ) : (

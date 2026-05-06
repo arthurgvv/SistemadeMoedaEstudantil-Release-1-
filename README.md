@@ -8,7 +8,7 @@
       </div>
     </td>
     <td align="center">
-      <img src="docs/UniCoin.png" alt="UniCoin Logo" width="120px"/>
+      <img src="docs/UniCoin.png" alt="UniCoin Logo" width="300px"/>
     </td>
   </tr>
 </table>

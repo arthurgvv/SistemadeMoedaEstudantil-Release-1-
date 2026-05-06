@@ -133,7 +133,7 @@ Company     ──1:N──► Product
 
 | Diagrama de Casos de Uso | Diagrama ER |
 | :---: | :---: |
-| <img src="docs/DiagramaDeCasosDeUso.png" alt="Diagrama de Casos de Uso" width="350px"> | <img src="docs/DER.jpeg" alt="Diagrama ER" width="350px"> |
+| <img src="docs/DiagramaCasoDeUso-v2.png" alt="Diagrama de Casos de Uso" width="350px"> | <img src="docs/DER.jpeg" alt="Diagrama ER" width="350px"> |
 
 ---
 
@@ -220,7 +220,8 @@ npm run dev
 │   ├── UniCoin.png
 │   ├── DiagramaDeClasses.png
 │   ├── DiagramaDeComponentes.png
-│   ├── DiagramaDeCasosDeUso.png
+│   ├── DiagramaCasoDeUso-v2.png
+│   ├── HistoriasDeUsuario.pdf
 │   └── historias-usuario.md
 │
 ├── frontend/                          # Aplicacao React

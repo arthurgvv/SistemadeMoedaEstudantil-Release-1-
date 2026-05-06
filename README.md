@@ -1,17 +1,14 @@
 # UniCoin
 
-<table>
-  <tr>
-    <td width="750px">
-      <div align="justify">
-        O <b>UniCoin</b> é um sistema de moeda estudantil desenvolvido para a disciplina de Laboratório de Desenvolvimento de Software da PUC Minas. Professores distribuem moedas como reconhecimento a alunos, que podem resgatá-las como vantagens junto a empresas parceiras. Instituições de ensino gerenciam professores e iniciam semestres, creditando saldo automaticamente.
-      </div>
-    </td>
-    <td align="center">
-      <img src="docs/UniCoin.png" alt="UniCoin Logo" width="120px"/>
-    </td>
-  </tr>
-</table>
+<div align="center">
+  <img src="docs/UniCoin.png" alt="UniCoin Logo" width="300px"/>
+</div>
+
+<br/>
+
+<div align="justify">
+  O <b>UniCoin</b> é um sistema de moeda estudantil desenvolvido para a disciplina de Laboratório de Desenvolvimento de Software da PUC Minas. Professores distribuem moedas como reconhecimento a alunos, que podem resgatá-las como vantagens junto a empresas parceiras. Instituições de ensino gerenciam professores e iniciam semestres, creditando saldo automaticamente.
+</div>
 
 ![Java](https://img.shields.io/badge/Java-21-007ec6?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3.5-007ec6?style=for-the-badge&logo=springboot&logoColor=white)
@@ -43,7 +40,7 @@
 
 ## Sobre o Projeto
 
-O UniCoin digitaliza o reconhecimento academico dentro de instituicoes de ensino. Professores recebem 1.000 moedas por semestre e as distribuem a alunos como recompensa por desempenho, participacao e comportamento. Alunos acumulam moedas e as trocam por vantagens — descontos, produtos e vouchers — cadastradas por empresas parceiras. Cada transacao gera notificacao por email e registro de extrato.
+O UniCoin digitaliza o reconhecimento academico dentro de instituicoes de ensino. Professores recebem 1.000 moedas por semestre e as distribuem a alunos como recompensa por desempenho, participacao e comportamento. Alunos acumulam moedas e as trocam por vantagens: descontos, produtos e vouchers cadastradas por empresas parceiras. Cada transacao gera notificacao por email e registro de extrato.
 
 **Atores do sistema:**
 
@@ -101,9 +98,9 @@ O UniCoin segue a arquitetura **MVC em camadas**, com separacao clara entre cont
 
 | Camada | Responsabilidade |
 |---|---|
-| `controller` | Endpoints REST (`@RestController`) — recebe e valida requisicoes HTTP |
+| `controller` | Endpoints REST (`@RestController`) - recebe e valida requisicoes HTTP |
 | `service` | Regras de negocio, validacoes, orquestracao |
-| `repository` | Interfaces `JpaRepository<T, UUID>` — acesso ao banco via Spring Data |
+| `repository` | Interfaces `JpaRepository<T, UUID>` - acesso ao banco via Spring Data |
 | `model` | Entidades JPA (`@Entity`) mapeadas para tabelas PostgreSQL |
 | `dto` | Objetos de transferencia de dados (request/response) |
 | `config` | Configuracoes de CORS |
@@ -112,11 +109,11 @@ O UniCoin segue a arquitetura **MVC em camadas**, com separacao clara entre cont
 
 - Todos os models anotados com `@Entity`, `@Id` e `@Column`
 - IDs sao `UUID` gerados pela aplicacao via `UUID.randomUUID()`
-- Repositories estendem `JpaRepository<T, UUID>` — metodos customizados por convencao de nome (`findByEmail`, `existsByCpf`, `findByInstitutionId`)
+- Repositories estendem `JpaRepository<T, UUID>` - metodos customizados por convencao de nome (`findByEmail`, `existsByCpf`, `findByInstitutionId`)
 - `@ElementCollection(fetch = EAGER)` para `Professor.cursos` (tabela auxiliar `professor_cursos`)
 - `ddl-auto=update`: Hibernate cria e atualiza o schema automaticamente
 - `data.sql` insere dados iniciais com `ON CONFLICT DO NOTHING`
-- Sessoes de autenticacao mantidas em memoria (`ConcurrentHashMap`) — nao persistidas
+- Sessoes de autenticacao mantidas em memoria (`ConcurrentHashMap`) - nao persistidas
 
 **Relacionamentos:**
 
@@ -134,9 +131,9 @@ Company     ──1:N──► Product
 | :---: | :---: |
 | <img src="docs/DiagramaDeClasses.png" alt="Diagrama de Classes" width="350px"> | <img src="docs/DiagramaDeComponentes.png" alt="Diagrama de Componentes" width="350px"> |
 
-| Diagrama de Casos de Uso | |
+| Diagrama de Casos de Uso | Diagrama ER |
 | :---: | :---: |
-| <img src="docs/DiagramaDeCasosDeUso.png" alt="Diagrama de Casos de Uso" width="350px"> | |
+| <img src="docs/DiagramaDeCasosDeUso.png" alt="Diagrama de Casos de Uso" width="350px"> | _em breve_ |
 
 ---
 
@@ -295,11 +292,11 @@ Os testes cobrem as regras de negocio dos services (`InstitutionService`, `Profe
 
 ## Autores
 
-| Nome | Foto | GitHub | LinkedIn | Gmail |
-|------|------|--------|----------|-------|
-| Arthur Goncalves Vieira | <div align="center"><img src="https://github.com/arthurgv.png" width="70px" height="70px"></div> | <div align="center"><a href="https://github.com/arthurgv"><img src="https://joaopauloaramuni.github.io/image/github6.png" width="50px" height="50px"></a></div> | <div align="center"><a href="https://linkedin.com/in/arthurgv"><img src="https://joaopauloaramuni.github.io/image/linkedin2.png" width="50px" height="50px"></a></div> | <div align="center"><a href="mailto:arthurgv@gmail.com"><img src="https://joaopauloaramuni.github.io/image/gmail3.png" width="50px" height="50px"></a></div> |
-| Matheus Guilherme | <div align="center"><img src="https://github.com/matheusguil.png" width="70px" height="70px"></div> | <div align="center"><a href="https://github.com/matheusguil"><img src="https://joaopauloaramuni.github.io/image/github6.png" width="50px" height="50px"></a></div> | <div align="center"><a href="https://linkedin.com/in/matheusguil"><img src="https://joaopauloaramuni.github.io/image/linkedin2.png" width="50px" height="50px"></a></div> | <div align="center"><a href="mailto:matheusguil@gmail.com"><img src="https://joaopauloaramuni.github.io/image/gmail3.png" width="50px" height="50px"></a></div> |
-| Miguel Moreira | <div align="center"><img src="https://github.com/miguelmoreira.png" width="70px" height="70px"></div> | <div align="center"><a href="https://github.com/miguelmoreira"><img src="https://joaopauloaramuni.github.io/image/github6.png" width="50px" height="50px"></a></div> | <div align="center"><a href="https://linkedin.com/in/miguelmoreira"><img src="https://joaopauloaramuni.github.io/image/linkedin2.png" width="50px" height="50px"></a></div> | <div align="center"><a href="mailto:miguelmoreira@gmail.com"><img src="https://joaopauloaramuni.github.io/image/gmail3.png" width="50px" height="50px"></a></div> |
+| Nome | Foto | GitHub |
+|------|------|--------|
+| Arthur Goncalves Vieira | <div align="center"><img src="https://github.com/arthurgv.png" width="70px" height="70px"></div> | <div align="center"><a href="https://github.com/arthurgv"><img src="https://joaopauloaramuni.github.io/image/github6.png" width="50px" height="50px"></a></div> |
+| Matheus Guilherme | <div align="center"><img src="https://github.com/matheusguil.png" width="70px" height="70px"></div> | <div align="center"><a href="https://github.com/matheusguil"><img src="https://joaopauloaramuni.github.io/image/github6.png" width="50px" height="50px"></a></div> |
+| Miguel Moreira | <div align="center"><img src="https://github.com/miguelmoreira.png" width="70px" height="70px"></div> | <div align="center"><a href="https://github.com/miguelmoreira"><img src="https://joaopauloaramuni.github.io/image/github6.png" width="50px" height="50px"></a></div> |
 
 > Disciplina: Laboratorio de Desenvolvimento de Software — PUC Minas
 > Professor: Joao Paulo Carneiro Aramuni

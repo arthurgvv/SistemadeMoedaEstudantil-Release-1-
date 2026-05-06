@@ -1,21 +1,56 @@
 package br.com.emoney.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Entity
+@Table(name = "students")
 public class Student {
+
+    @Id
+    @Column(name = "id")
     private UUID id;
+
+    @Column(name = "nome", nullable = false)
     private String nome;
+
+    @Column(name = "email", unique = true)
     private String email;
+
+    @Column(name = "cpf", unique = true)
     private String cpf;
+
+    @Column(name = "rg")
     private String rg;
+
+    @Column(name = "endereco")
     private String endereco;
+
+    @Column(name = "institution_id")
     private UUID institutionId;
+
+    @Column(name = "instituicao")
     private String instituicao;
+
+    @Column(name = "curso")
     private String curso;
+
+    @Column(name = "senha")
     private String senha;
+
+    @Column(name = "saldo_moedas")
     private int saldoMoedas;
+
+    @Column(name = "ultimo_aviso")
     private String ultimoAviso;
+
+    @Column(name = "criado_em")
     private LocalDateTime criadoEm;
 
     public Student() {
@@ -34,6 +69,13 @@ public class Student {
         this.saldoMoedas = 0;
         this.ultimoAviso = "";
         this.criadoEm = LocalDateTime.now();
+    }
+
+    @PrePersist
+    private void prePersist() {
+        if (criadoEm == null) {
+            criadoEm = LocalDateTime.now();
+        }
     }
 
     public UUID getId() {

@@ -1,14 +1,36 @@
 package br.com.emoney.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.util.UUID;
 
+@Entity
+@Table(name = "products")
 public class Product {
+
+    @Id
+    @Column(name = "id")
     private UUID id;
+
+    @Column(name = "nome", nullable = false)
     private String nome;
+
+    @Column(name = "empresa_parceira")
     private String empresaParceira;
+
+    @Column(name = "descricao", columnDefinition = "TEXT")
     private String descricao;
+
+    @Column(name = "custo_moedas")
     private int custoMoedas;
+
+    @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "company_id")
     private UUID companyId;
 
     public Product() {

@@ -1,45 +1,17 @@
 package br.com.emoney.repository;
 
 import br.com.emoney.model.Student;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
-@Repository
-public class StudentRepository {
-    private final ConcurrentHashMap<UUID, Student> students = new ConcurrentHashMap<>();
+public interface StudentRepository extends JpaRepository<Student, UUID> {
 
-    public List<Student> findAll() {
-        return new ArrayList<>(students.values());
-    }
+    Optional<Student> findByEmail(String email);
 
-    public Optional<Student> findById(UUID id) {
-        return Optional.ofNullable(students.get(id));
-    }
+    List<Student> findByInstitutionIdAndCurso(UUID institutionId, String curso);
 
-    public Optional<Student> findByEmail(String email) {
-        return students.values().stream()
-                .filter(student -> student.getEmail().equalsIgnoreCase(email))
-                .findFirst();
-    }
-
-    public List<Student> findByInstitutionIdAndCurso(UUID institutionId, String curso) {
-        return students.values().stream()
-                .filter(student -> institutionId != null && institutionId.equals(student.getInstitutionId()))
-                .filter(student -> curso.equals(student.getCurso()))
-                .toList();
-    }
-
-    public boolean existsByCpf(String cpf) {
-        return students.values().stream().anyMatch(student -> student.getCpf().equals(cpf));
-    }
-
-    public Student save(Student student) {
-        students.put(student.getId(), student);
-        return student;
-    }
+    boolean existsByCpf(String cpf);
 }

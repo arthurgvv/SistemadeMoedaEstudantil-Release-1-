@@ -1,19 +1,49 @@
 package br.com.emoney.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
+@Table(name = "institutions")
 public class Institution {
+
+    @Id
+    @Column(name = "id")
     private UUID id;
+
+    @Column(name = "nome", nullable = false)
     private String nome;
+
+    @Column(name = "email", unique = true)
     private String email;
+
+    @Column(name = "senha")
     private String senha;
+
+    @Column(name = "telefone")
     private String telefone;
+
+    @Column(name = "endereco")
     private String endereco;
+
+    @Column(name = "identificador_institucional", unique = true)
     private String identificadorInstitucional;
+
+    @Column(name = "criado_em")
     private LocalDateTime criadoEm;
+
+    @JsonIgnore
+    @Transient
     private List<UUID> professores;
 
     public Institution() {
@@ -30,6 +60,13 @@ public class Institution {
         this.identificadorInstitucional = identificadorInstitucional;
         this.criadoEm = LocalDateTime.now();
         this.professores = new ArrayList<>();
+    }
+
+    @PrePersist
+    private void prePersist() {
+        if (criadoEm == null) {
+            criadoEm = LocalDateTime.now();
+        }
     }
 
     public UUID getId() {

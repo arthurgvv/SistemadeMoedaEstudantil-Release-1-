@@ -1,18 +1,50 @@
 package br.com.emoney.model;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Entity
+@Table(name = "professors")
 public class Professor {
+
+    @Id
+    @Column(name = "id")
     private UUID id;
+
+    @Column(name = "nome", nullable = false)
     private String nome;
+
+    @Column(name = "cpf", unique = true)
     private String cpf;
+
+    @Column(name = "email", unique = true)
     private String email;
+
+    @Column(name = "senha")
     private String senha;
+
+    @Column(name = "institution_id")
     private UUID institutionId;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "professor_cursos", joinColumns = @JoinColumn(name = "professor_id"))
+    @Column(name = "curso")
     private List<String> cursos;
+
+    @Column(name = "saldo_moedas")
     private int saldoMoedas;
+
+    @Column(name = "ultimo_aviso")
     private String ultimoAviso;
 
     public Professor() {

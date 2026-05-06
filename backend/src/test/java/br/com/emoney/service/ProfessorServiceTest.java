@@ -11,34 +11,48 @@ import br.com.emoney.repository.ProfessorRepository;
 import br.com.emoney.repository.StudentRepository;
 import br.com.emoney.repository.TransferRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class ProfessorServiceTest {
+
+    @Mock
+    private ProfessorRepository professorRepository;
+
+    @Mock
+    private StudentRepository studentRepository;
+
+    @Mock
+    private TransferRepository transferRepository;
+
+    @Mock
+    private InstitutionRepository institutionRepository;
 
     @Test
     void rejectsTransferWhenStudentIsOutsideProfessorCourses() throws Exception {
         ValidationService validationService = new ValidationService();
-        ProfessorRepository professorRepository = new ProfessorRepository();
-        StudentRepository studentRepository = new StudentRepository();
-        TransferRepository transferRepository = new TransferRepository();
-        InstitutionRepository institutionRepository = new InstitutionRepository();
         StudentService studentService = new StudentService(studentRepository, validationService, institutionRepository);
         ProfessorService professorService = new ProfessorService(professorRepository, studentService, transferRepository, validationService);
 
-        Institution institution = institutionRepository.save(new Institution(
+        Institution institution = new Institution(
                 "PUC Minas",
                 "contato@pucminas.edu",
                 "senha123",
                 "3133334444",
                 "Av. Dom Jose Gaspar",
                 "12345678000199"
-        ));
+        );
 
-        Professor professor = professorRepository.save(new Professor(
+        Professor professor = new Professor(
                 "Ana Souza",
                 "12345678901",
                 "ana@gmail.com",
@@ -46,7 +60,7 @@ class ProfessorServiceTest {
                 institution.getId(),
                 List.of("Engenharia de Software"),
                 1000
-        ));
+        );
 
         Student student = new Student(
                 "Bruno Lima",
@@ -59,7 +73,9 @@ class ProfessorServiceTest {
                 "senha123"
         );
         student.setInstitutionId(institution.getId());
-        studentRepository.save(student);
+
+        when(professorRepository.findById(professor.getId())).thenReturn(Optional.of(professor));
+        when(studentRepository.findById(student.getId())).thenReturn(Optional.of(student));
 
         TransferCoinsRequest request = new TransferCoinsRequest();
         setField(request, "studentId", student.getId());

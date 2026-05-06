@@ -1,17 +1,9 @@
 package br.com.emoney.repository;
 
 import br.com.emoney.model.CoinTransfer;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
-@Repository
-public class TransferRepository {
-    private final List<CoinTransfer> transfers = new ArrayList<>();
-
-    public CoinTransfer save(CoinTransfer transfer) {
-        transfers.add(transfer);
-        return transfer;
-    }
+public interface TransferRepository extends JpaRepository<CoinTransfer, UUID> {
 }

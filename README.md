@@ -1,13 +1,13 @@
-# UniCoin
+# happyCoin
 
 <div align="center">
-  <img src="docs/UniCoin.png" alt="UniCoin Logo" width="300px"/>
+  <img src="docs/happyCoin.png" alt="happyCoin Logo" width="300px"/>
 </div>
 
 <br/>
 
 <div align="justify">
-  O <b>UniCoin</b> é um sistema de moeda estudantil desenvolvido para a disciplina de Laboratório de Desenvolvimento de Software da PUC Minas. Professores distribuem moedas como reconhecimento a alunos, que podem resgatá-las como vantagens junto a empresas parceiras. Instituições de ensino gerenciam professores e iniciam semestres, creditando saldo automaticamente.
+  O <b>happyCoin</b> é um sistema de moeda estudantil desenvolvido para a disciplina de Laboratório de Desenvolvimento de Software da PUC Minas. Professores distribuem moedas como reconhecimento a alunos, que podem resgatá-las como vantagens junto a empresas parceiras. Instituições de ensino gerenciam professores e iniciam semestres, creditando saldo automaticamente.
 </div>
 
 ![Java](https://img.shields.io/badge/Java-21-007ec6?style=for-the-badge&logo=openjdk&logoColor=white)
@@ -40,7 +40,7 @@
 
 ## Sobre o Projeto
 
-O UniCoin digitaliza o reconhecimento academico dentro de instituicoes de ensino. Professores recebem 1.000 moedas por semestre e as distribuem a alunos como recompensa por desempenho, participacao e comportamento. Alunos acumulam moedas e as trocam por vantagens: descontos, produtos e vouchers cadastradas por empresas parceiras. Cada transacao gera notificacao por email e registro de extrato.
+O happyCoin digitaliza o reconhecimento academico dentro de instituicoes de ensino. Professores recebem 1.000 moedas por semestre e as distribuem a alunos como recompensa por desempenho, participacao e comportamento. Alunos acumulam moedas e as trocam por vantagens: descontos, produtos e vouchers cadastradas por empresas parceiras. Cada transacao gera notificacao por email e registro de extrato.
 
 **Atores do sistema:**
 
@@ -92,7 +92,7 @@ O UniCoin digitaliza o reconhecimento academico dentro de instituicoes de ensino
 
 ## Arquitetura
 
-O UniCoin segue a arquitetura **MVC em camadas**, com separacao clara entre controladores REST, logica de negocio, acesso a dados e representacao das entidades.
+O happyCoin segue a arquitetura **MVC em camadas**, com separacao clara entre controladores REST, logica de negocio, acesso a dados e representacao das entidades.
 
 **Camadas:**
 
@@ -217,7 +217,7 @@ npm run dev
 .
 ├── README.md
 ├── docs/                              # Diagramas e documentacao
-│   ├── UniCoin.png
+│   ├── happyCoin.png
 │   ├── DiagramaDeClasses.png
 │   ├── DiagramaDeComponentes.png
 │   ├── DiagramaCasoDeUso-v2.png
@@ -240,7 +240,7 @@ npm run dev
     ├── pom.xml
     └── src/
         ├── main/
-        │   ├── java/br/com/unicoin/
+        │   ├── java/br/com/happyCoin/
         │   │   ├── controller/        # Endpoints REST
         │   │   ├── service/           # Regras de negocio
         │   │   ├── repository/        # Interfaces JpaRepository
@@ -251,7 +251,7 @@ npm run dev
         │       ├── application.properties
         │       └── data.sql           # Dados iniciais (seed)
         └── test/
-            └── java/br/com/unicoin/  # Testes unitarios (JUnit 5 + Mockito)
+            └── java/br/com/happyCoin/  # Testes unitarios (JUnit 5 + Mockito)
 ```
 
 ---
@@ -261,7 +261,7 @@ npm run dev
 **Professor padrao (pre-cadastrado):**
 
 ```
-Email: professor@unicoin.com
+Email: professor@happyCoin.com
 Senha: Professor123
 Saldo: 1.000 moedas
 ```

@@ -51,11 +51,7 @@ public class InstitutionService {
                 identificador
         );
 
-        Institution savedInstitution = institutionRepository.save(institution);
-
-        List<RegisterProfessorRequest> professorRequests = request.getProfessores() == null ? List.of() : request.getProfessores();
-        professorRequests.forEach(professorRequest -> createProfessor(savedInstitution.getId(), professorRequest, false));
-        return savedInstitution;
+        return institutionRepository.save(institution);
     }
 
     public Professor createProfessor(UUID institutionId, RegisterProfessorRequest request, boolean withInitialSemesterCredit) {

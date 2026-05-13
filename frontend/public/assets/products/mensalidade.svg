@@ -1,7 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300">
-  <rect width="420" height="300" fill="#090909"/>
-  <rect x="82" y="48" width="214" height="204" rx="12" fill="#151515" stroke="#ffd21f" stroke-width="6"/>
-  <text x="114" y="112" fill="#ffd21f" font-family="Arial" font-size="30" font-weight="900">MENSALIDADE</text>
-  <text x="132" y="166" fill="#fff" font-family="Arial" font-size="64" font-weight="900">-R$</text>
-  <rect x="122" y="204" width="132" height="12" fill="#ffd21f"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 480" role="img" aria-label="Dinheiro">
+  <rect width="360" height="480" rx="28" fill="#ffffff"/>
+  <rect x="28" y="36" width="304" height="408" rx="20" fill="#faf8f0" stroke="#111111" stroke-width="4"/>
+  <g transform="translate(48 96)">
+    <rect x="28" y="42" width="230" height="142" rx="18" fill="#f4b91f" stroke="#111111" stroke-width="8" transform="rotate(-8 143 113)"/>
+    <rect x="52" y="66" width="182" height="94" rx="14" fill="#ffffff" stroke="#111111" stroke-width="5" transform="rotate(-8 143 113)"/>
+    <circle cx="143" cy="113" r="34" fill="#f4b91f" stroke="#111111" stroke-width="6"/>
+    <path d="M133 112c0-9 7-16 18-16 8 0 15 3 20 8" fill="none" stroke="#111111" stroke-width="8" stroke-linecap="round"/>
+    <path d="M153 97v62" fill="none" stroke="#111111" stroke-width="7" stroke-linecap="round"/>
+    <path d="M174 128c0 10-8 17-20 17-10 0-18-3-24-10" fill="none" stroke="#111111" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <g fill="#f4b91f" stroke="#111111" stroke-width="7">
+    <circle cx="116" cy="318" r="42"/>
+    <circle cx="180" cy="318" r="42"/>
+    <circle cx="244" cy="318" r="42"/>
+  </g>
+  <g fill="none" stroke="#111111" stroke-width="7" stroke-linecap="round">
+    <path d="M104 318h24"/>
+    <path d="M168 318h24"/>
+    <path d="M232 318h24"/>
+    <path d="M116 306v24"/>
+    <path d="M180 306v24"/>
+    <path d="M244 306v24"/>
+  </g>
 </svg>

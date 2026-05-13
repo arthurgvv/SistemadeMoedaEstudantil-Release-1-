@@ -46,7 +46,9 @@ function App() {
   if (auth.loading) {
     return (
       <div className="loading-screen">
-        <div className="loading-logo">e-money</div>
+        <div className="loading-logo" aria-label="happycoin">
+          <span className="brand-happy">happy</span><span className="brand-coin">coin</span>
+        </div>
       </div>
     );
   }

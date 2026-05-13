@@ -17,4 +17,10 @@ export const productService = {
       method: "DELETE",
     });
   },
+
+  purchase(id) {
+    return apiRequest(`/products/${id}/purchase`, {
+      method: "POST",
+    });
+  },
 };

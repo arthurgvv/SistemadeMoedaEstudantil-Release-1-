@@ -32,20 +32,16 @@ const emptyInstitutionForm = {
   telefone: "",
   endereco: "",
   identificadorInstitucional: "",
-  professores: [
-    { nome: "", cpf: "", email: "", senha: "senha123", cursos: [] },
-  ],
 };
 
 function AuthPage({ onLogin, onRegister, onCompanyRegister, onInstitutionRegister }) {
-  const [mode, setMode] = useState("register");
+  const [mode, setMode] = useState("choice");
   const [registerForm, setRegisterForm] = useState(emptyRegisterForm);
   const [companyForm, setCompanyForm] = useState(emptyCompanyForm);
   const [institutionForm, setInstitutionForm] = useState(emptyInstitutionForm);
   const [loginForm, setLoginForm] = useState(emptyLoginForm);
   const [institutions, setInstitutions] = useState(DEFAULT_INSTITUTIONS);
   const [courses, setCourses] = useState([]);
-  const [expandedProfessor, setExpandedProfessor] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -87,10 +83,7 @@ function AuthPage({ onLogin, onRegister, onCompanyRegister, onInstitutionRegiste
     event.preventDefault();
     setSubmitting(true);
     try {
-      await onInstitutionRegister({
-        ...institutionForm,
-        professores: institutionForm.professores.filter((professor) => professor.nome.trim() && professor.cpf.trim() && professor.email.trim()),
-      });
+      await onInstitutionRegister(institutionForm);
     } finally {
       setSubmitting(false);
     }
@@ -108,81 +101,47 @@ function AuthPage({ onLogin, onRegister, onCompanyRegister, onInstitutionRegiste
     setInstitutionForm((current) => ({ ...current, [name]: value }));
   }
 
-  function updateProfessor(index, name, value) {
-    setInstitutionForm((current) => ({
-      ...current,
-      professores: current.professores.map((professor, currentIndex) =>
-        currentIndex === index ? { ...professor, [name]: value } : professor,
-      ),
-    }));
-  }
-
-  function updateProfessorCourses(index, course) {
-    setInstitutionForm((current) => ({
-      ...current,
-      professores: current.professores.map((professor, currentIndex) => {
-        if (currentIndex !== index) {
-          return professor;
-        }
-        const nextCourses = professor.cursos.includes(course)
-          ? professor.cursos.filter((item) => item !== course)
-          : [...professor.cursos, course];
-        return { ...professor, cursos: nextCourses };
-      }),
-    }));
-  }
-
-  function addProfessor() {
-    setInstitutionForm((current) => ({
-      ...current,
-      professores: [...current.professores, { nome: "", cpf: "", email: "", senha: "senha123", cursos: [] }],
-    }));
-    setExpandedProfessor(institutionForm.professores.length);
-  }
-
-  function removeProfessor(index) {
-    setInstitutionForm((current) => ({
-      ...current,
-      professores: current.professores.filter((_, currentIndex) => currentIndex !== index),
-    }));
-    setExpandedProfessor((current) => (current === index ? 0 : Math.max(0, current - (current > index ? 1 : 0))));
-  }
-
-  function suggestProfessorEmail(index, nome) {
-    const parts = nome.trim().toLowerCase().split(/\s+/).filter(Boolean);
-    if (parts.length < 2) {
-      return;
-    }
-    const suggestedEmail = `${parts[0]}.${parts[parts.length - 1]}@gmail.com`;
-    updateProfessor(index, "email", suggestedEmail);
-  }
-
   return (
     <main className="auth-layout">
       <section className="auth-hero">
         <div className="product-hero">
-          <img src="/assets/emoney-logo.png" alt="Logo e-money" />
+          <img src="/assets/happycoin-logo.png" alt="Logo Happy Coin" />
         </div>
       </section>
 
       <section className="auth-card">
-        <div className="auth-switch auth-switch-scroll" aria-label="Escolha entre cadastro e login">
-          <button className={mode === "register" ? "is-active" : ""} type="button" onClick={() => setMode("register")}>
-            Aluno
-          </button>
-          <button className={mode === "company" ? "is-active" : ""} type="button" onClick={() => setMode("company")}>
-            Empresa
-          </button>
-          <button className={mode === "institution" ? "is-active" : ""} type="button" onClick={() => setMode("institution")}>
-            Instituicao
-          </button>
-          <button className={mode === "login" ? "is-active" : ""} type="button" onClick={() => setMode("login")}>
-            Entrar
-          </button>
-        </div>
-
-        {mode === "register" ? (
+        {mode === "choice" ? (
+          <div className="auth-choice">
+            <div className="auth-heading">
+              <p className="eyebrow brand-wordmark" aria-label="HappyCoin">
+                <span className="brand-happy">Happy</span><span className="brand-coin">Coin</span>
+              </p>
+              <h2>Como deseja acessar?</h2>
+            </div>
+            <div className="auth-choice-actions">
+              <button className="auth-choice-button" type="button" onClick={() => setMode("login")}>
+                <strong>Entrar</strong>
+                <span>Aluno, empresa ou instituicao</span>
+              </button>
+              <button className="auth-choice-button" type="button" onClick={() => setMode("register")}>
+                <strong>Criar conta aluno</strong>
+                <span>Cadastro de estudante</span>
+              </button>
+              <button className="auth-choice-button" type="button" onClick={() => setMode("company")}>
+                <strong>Criar conta empresa</strong>
+                <span>Cadastro de parceiro</span>
+              </button>
+              <button className="auth-choice-button" type="button" onClick={() => setMode("institution")}>
+                <strong>Criar conta instituicao</strong>
+                <span>Cadastro institucional</span>
+              </button>
+            </div>
+          </div>
+        ) : mode === "register" ? (
           <form className="auth-form" onSubmit={handleRegister}>
+            <button className="auth-back" type="button" onClick={() => setMode("choice")}>
+              Voltar
+            </button>
             <div className="auth-heading">
               <p className="eyebrow">Aluno</p>
               <h2>Crie sua conta</h2>
@@ -235,6 +194,9 @@ function AuthPage({ onLogin, onRegister, onCompanyRegister, onInstitutionRegiste
           </form>
         ) : mode === "company" ? (
           <form className="auth-form" onSubmit={handleCompanyRegister}>
+            <button className="auth-back" type="button" onClick={() => setMode("choice")}>
+              Voltar
+            </button>
             <div className="auth-heading">
               <p className="eyebrow">Empresa parceira</p>
               <h2>Cadastre sua empresa</h2>
@@ -261,9 +223,12 @@ function AuthPage({ onLogin, onRegister, onCompanyRegister, onInstitutionRegiste
           </form>
         ) : mode === "institution" ? (
           <form className="auth-form" onSubmit={handleInstitutionRegister}>
+            <button className="auth-back" type="button" onClick={() => setMode("choice")}>
+              Voltar
+            </button>
             <div className="auth-heading">
               <p className="eyebrow">Instituicao</p>
-              <h2>Cadastre a instituicao e seus professores</h2>
+              <h2>Cadastre a instituicao</h2>
             </div>
             <label>
               Nome da instituicao
@@ -289,101 +254,17 @@ function AuthPage({ onLogin, onRegister, onCompanyRegister, onInstitutionRegiste
               Senha
               <input type="password" value={institutionForm.senha} onChange={(event) => updateInstitution("senha", event.target.value)} required />
             </label>
-
-            <div className="professor-builder full-field">
-              <div className="section-heading">
-                <div>
-                  <p className="eyebrow">Professores</p>
-                  <h2>Adicione quantos quiser</h2>
-                </div>
-                <button className="button button-secondary" type="button" onClick={addProfessor}>
-                  + Professor
-                </button>
-              </div>
-
-              <div className="professor-builder-list">
-                {institutionForm.professores.map((professor, index) => (
-                  <article className="professor-builder-card" key={`professor-${index}`}>
-                    <div className="professor-builder-summary">
-                      <button
-                        className="professor-builder-toggle"
-                        type="button"
-                        onClick={() => setExpandedProfessor((current) => (current === index ? -1 : index))}
-                      >
-                        <span className="professor-order">#{index + 1}</span>
-                        <div className="professor-summary-copy">
-                          <strong>{professor.nome || "Novo professor"}</strong>
-                          <p>
-                            {professor.email || "Email sera sugerido automaticamente"}
-                            {" • "}
-                            {professor.cursos.length ? `${professor.cursos.length} curso(s)` : "Sem cursos definidos"}
-                          </p>
-                        </div>
-                      </button>
-                      <div className="professor-builder-actions">
-                        <span className="professor-inline-password">{professor.senha || "senha123"}</span>
-                        {institutionForm.professores.length > 1 && (
-                          <button className="button button-ghost professor-remove" type="button" onClick={() => removeProfessor(index)}>
-                            Remover
-                          </button>
-                        )}
-                      </div>
-                    </div>
-
-                    {expandedProfessor === index && (
-                      <div className="professor-builder-fields">
-                        <div className="professor-builder-grid">
-                          <label>
-                            Nome
-                            <input
-                              value={professor.nome}
-                              onBlur={(event) => suggestProfessorEmail(index, event.target.value)}
-                              onChange={(event) => updateProfessor(index, "nome", event.target.value)}
-                            />
-                          </label>
-                          <label>
-                            CPF
-                            <input inputMode="numeric" maxLength="11" value={professor.cpf} onChange={(event) => updateProfessor(index, "cpf", onlyDigits(event.target.value).slice(0, 11))} />
-                          </label>
-                          <label>
-                            Email sugerido
-                            <input type="email" value={professor.email} onChange={(event) => updateProfessor(index, "email", event.target.value)} />
-                          </label>
-                          <label>
-                            Senha inicial
-                            <input type="text" value={professor.senha} onChange={(event) => updateProfessor(index, "senha", event.target.value)} />
-                          </label>
-                        </div>
-                        <div className="course-picker">
-                          <span>Cursos atribuidos</span>
-                          <div className="course-chip-list">
-                            {courses.map((course) => (
-                              <button
-                                key={`${index}-${course}`}
-                                className={`course-chip ${professor.cursos.includes(course) ? "is-selected" : ""}`}
-                                type="button"
-                                onClick={() => updateProfessorCourses(index, course)}
-                              >
-                                {course}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </article>
-                ))}
-              </div>
-            </div>
-
             <button className="button button-primary" type="submit" disabled={submitting}>
               {submitting ? "Criando..." : "Criar instituicao"}
             </button>
           </form>
         ) : (
           <form className="auth-form" onSubmit={handleLogin}>
+            <button className="auth-back" type="button" onClick={() => setMode("choice")}>
+              Voltar
+            </button>
             <div className="auth-heading">
-              <p className="eyebrow">Aluno, professor ou empresa</p>
+              <p className="eyebrow">Aluno, empresa ou instituicao</p>
               <h2>Acesse sua conta</h2>
             </div>
             <label>

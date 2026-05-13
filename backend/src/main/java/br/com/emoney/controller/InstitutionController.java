@@ -2,7 +2,6 @@ package br.com.emoney.controller;
 
 import br.com.emoney.dto.InstitutionResponse;
 import br.com.emoney.dto.ProfessorResponse;
-import br.com.emoney.dto.RegisterProfessorRequest;
 import br.com.emoney.dto.SemesterStartResponse;
 import br.com.emoney.model.AuthSession;
 import br.com.emoney.model.UserRole;
@@ -10,7 +9,6 @@ import br.com.emoney.service.AuthService;
 import br.com.emoney.service.InstitutionService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,12 +39,6 @@ public class InstitutionController {
     public List<ProfessorResponse> professors(@RequestHeader("Authorization") String authorization) {
         AuthSession session = requireInstitutionSession(authorization);
         return institutionService.listProfessors(session.getUserId());
-    }
-
-    @PostMapping("/me/professors")
-    public ProfessorResponse addProfessor(@RequestHeader("Authorization") String authorization, @RequestBody RegisterProfessorRequest request) {
-        AuthSession session = requireInstitutionSession(authorization);
-        return new ProfessorResponse(institutionService.createProfessor(session.getUserId(), request, false));
     }
 
     @PostMapping("/me/semester/start")

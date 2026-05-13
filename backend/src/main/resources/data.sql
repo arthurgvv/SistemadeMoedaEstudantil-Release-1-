@@ -10,16 +10,26 @@ VALUES
     ('00000002-0000-0000-0000-000000000001', 'Professor Padrao', NULL, 'professor@emoney.com', 'Professor123', NULL, 1000, '')
 ON CONFLICT DO NOTHING;
 
+DELETE FROM products
+WHERE id IN (
+    '00000003-0000-0000-0000-000000000007',
+    '00000003-0000-0000-0000-000000000008',
+    '00000003-0000-0000-0000-000000000009',
+    '00000003-0000-0000-0000-000000000010'
+);
+
 INSERT INTO products (id, nome, empresa_parceira, descricao, custo_moedas, image_url, company_id)
 VALUES
-    ('00000003-0000-0000-0000-000000000001', 'Data Science do Zero', 'Livraria Tech Minas', 'Livro introdutorio para ciencia de dados.', 120, '/assets/products/data-science.svg', NULL),
-    ('00000003-0000-0000-0000-000000000002', 'Python para Analise de Dados', 'Code Books', 'Guia pratico para manipulacao e visualizacao de dados.', 160, '/assets/products/python-dados.svg', NULL),
-    ('00000003-0000-0000-0000-000000000003', 'Engenharia de Software Moderna', 'PUC Store', 'Livro sobre requisitos, arquitetura, testes e entrega.', 140, '/assets/products/engenharia-software.svg', NULL),
-    ('00000003-0000-0000-0000-000000000004', 'Clean Code', 'Livraria Parceira', 'Boas praticas para escrever codigo limpo e sustentavel.', 180, '/assets/products/clean-code.svg', NULL),
-    ('00000003-0000-0000-0000-000000000005', 'Sistemas Distribuidos', 'BookLab', 'Fundamentos para sistemas escalaveis e resilientes.', 200, '/assets/products/sistemas-distribuidos.svg', NULL),
-    ('00000003-0000-0000-0000-000000000006', 'Banco de Dados: Projeto e Pratica', 'Data Books', 'Modelagem, SQL e conceitos essenciais de bancos de dados.', 150, '/assets/products/banco-dados.svg', NULL),
-    ('00000003-0000-0000-0000-000000000007', 'Voucher Boca do Forno', 'Boca do Forno', 'Desconto em lanche universitario no restaurante parceiro.', 80, '/assets/products/boca-forno.svg', NULL),
-    ('00000003-0000-0000-0000-000000000008', 'Voucher refeicao Trailer', 'O Trailer', 'Credito para refeicao rapida dentro da universidade.', 70, '/assets/products/trailer.svg', NULL),
-    ('00000003-0000-0000-0000-000000000009', 'Desconto de mensalidade', 'PUC Parceira', 'Credito simbolico para abatimento em mensalidade academica.', 500, '/assets/products/mensalidade.svg', NULL),
-    ('00000003-0000-0000-0000-000000000010', 'Kit do D.A. de Ciencia da Computacao', 'D.A. da Ciencia da Computacao', 'Combo especial com caneca, adesivos e camiseta do curso.', 999, '/assets/products/kit-da-computacao.svg', NULL)
-ON CONFLICT DO NOTHING;
+    ('00000003-0000-0000-0000-000000000001', 'Fundamentos da Arquitetura de Software', 'Novatec Editora', 'Uma abordagem moderna para engenharia e arquitetura de software.', 180, '/assets/products/fundamentos-arquitetura-software.jpg', NULL),
+    ('00000003-0000-0000-0000-000000000002', 'Criando Microservicos', 'Novatec Editora', 'Projetando sistemas com componentes menores e mais especializados.', 170, '/assets/products/criando-microservicos.jpg', NULL),
+    ('00000003-0000-0000-0000-000000000003', 'Programacao Utilizando IA', 'Novatec Editora', 'Otimizando planejamento, programacao, testes e implantacao com IA.', 150, '/assets/products/programacao-utilizando-ia.jpg', NULL),
+    ('00000003-0000-0000-0000-000000000004', 'Fluencia em Dados e IA', 'Alta Books', 'Estrategias e praticas para trabalhar e viver em um mundo dirigido por dados.', 160, '/assets/products/fluencia-dados-ia.png', NULL),
+    ('00000003-0000-0000-0000-000000000005', 'Descontao Boca do Forno', 'Boca do Forno', 'Voucher especial para usar em doces e salgados da Boca do Forno.', 80, '/assets/products/boca-forno.png', NULL),
+    ('00000003-0000-0000-0000-000000000006', 'Desconto de Mensalidade', 'PUC Parceira', 'Credito simbolico para abatimento em mensalidade academica.', 500, '/assets/products/mensalidade.svg', NULL)
+ON CONFLICT (id) DO UPDATE SET
+    nome = EXCLUDED.nome,
+    empresa_parceira = EXCLUDED.empresa_parceira,
+    descricao = EXCLUDED.descricao,
+    custo_moedas = EXCLUDED.custo_moedas,
+    image_url = EXCLUDED.image_url,
+    company_id = EXCLUDED.company_id;

@@ -1,6 +1,7 @@
 package br.com.emoney.controller;
 
 import br.com.emoney.dto.ProductRequest;
+import br.com.emoney.dto.StudentResponse;
 import br.com.emoney.model.AuthSession;
 import br.com.emoney.model.Product;
 import br.com.emoney.service.AuthService;
@@ -43,5 +44,11 @@ public class ProductController {
     public void remove(@RequestHeader("Authorization") String authorization, @PathVariable UUID id) {
         AuthSession session = authService.requireSession(authorization);
         productService.remove(session, id);
+    }
+
+    @PostMapping("/{id}/purchase")
+    public StudentResponse purchase(@RequestHeader("Authorization") String authorization, @PathVariable UUID id) {
+        AuthSession session = authService.requireSession(authorization);
+        return productService.purchase(session, id);
     }
 }

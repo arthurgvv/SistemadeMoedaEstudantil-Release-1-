@@ -1,38 +1,15 @@
 import { useEffect, useState } from "react";
+import DevLogin from "../components/DevLogin.jsx";
+import PenguinCanvas from "../components/PenguinCanvas.jsx";
 import { DEFAULT_INSTITUTIONS, mergeInstitutions } from "../services/institutionOptions.js";
 import { studentService } from "../services/studentService.js";
 
 const emptyRegisterForm = {
-  nome: "",
-  email: "",
-  cpf: "",
-  rg: "",
-  endereco: "",
-  instituicao: "",
-  curso: "",
-  senha: "",
+  nome: "", email: "", cpf: "", rg: "", endereco: "", instituicao: "", curso: "", senha: "",
 };
-
-const emptyLoginForm = {
-  email: "",
-  senha: "",
-};
-
-const emptyCompanyForm = {
-  nomeFantasia: "",
-  cnpj: "",
-  email: "",
-  senha: "",
-};
-
-const emptyInstitutionForm = {
-  nome: "",
-  email: "",
-  senha: "senha123",
-  telefone: "",
-  endereco: "",
-  identificadorInstitucional: "",
-};
+const emptyLoginForm = { email: "", senha: "" };
+const emptyCompanyForm = { nomeFantasia: "", cnpj: "", email: "", senha: "" };
+const emptyInstitutionForm = { nome: "", email: "", senha: "senha123", telefone: "", endereco: "", identificadorInstitucional: "" };
 
 function AuthPage({ onLogin, onRegister, onCompanyRegister, onInstitutionRegister }) {
   const [mode, setMode] = useState("choice");
@@ -43,245 +20,290 @@ function AuthPage({ onLogin, onRegister, onCompanyRegister, onInstitutionRegiste
   const [institutions, setInstitutions] = useState(DEFAULT_INSTITUTIONS);
   const [courses, setCourses] = useState([]);
   const [submitting, setSubmitting] = useState(false);
+  const [showPass, setShowPass] = useState(false);
 
   useEffect(() => {
     studentService.institutions().then((data) => setInstitutions(mergeInstitutions(data))).catch(() => setInstitutions(DEFAULT_INSTITUTIONS));
     studentService.courses().then(setCourses).catch(() => setCourses([]));
   }, []);
 
+  function goTo(next) { setMode(next); setShowPass(false); }
+
   async function handleRegister(event) {
     event.preventDefault();
     setSubmitting(true);
-    try {
-      await onRegister(registerForm);
-    } finally {
-      setSubmitting(false);
-    }
+    try { await onRegister(registerForm); } finally { setSubmitting(false); }
   }
 
   async function handleLogin(event) {
     event.preventDefault();
     setSubmitting(true);
-    try {
-      await onLogin(loginForm);
-    } finally {
-      setSubmitting(false);
-    }
+    try { await onLogin(loginForm); } finally { setSubmitting(false); }
   }
 
   async function handleCompanyRegister(event) {
     event.preventDefault();
     setSubmitting(true);
-    try {
-      await onCompanyRegister(companyForm);
-    } finally {
-      setSubmitting(false);
-    }
+    try { await onCompanyRegister(companyForm); } finally { setSubmitting(false); }
   }
 
   async function handleInstitutionRegister(event) {
     event.preventDefault();
     setSubmitting(true);
-    try {
-      await onInstitutionRegister(institutionForm);
-    } finally {
-      setSubmitting(false);
-    }
+    try { await onInstitutionRegister(institutionForm); } finally { setSubmitting(false); }
   }
 
-  function updateRegister(name, value) {
-    setRegisterForm((current) => ({ ...current, [name]: value }));
-  }
-
-  function updateCompany(name, value) {
-    setCompanyForm((current) => ({ ...current, [name]: value }));
-  }
-
-  function updateInstitution(name, value) {
-    setInstitutionForm((current) => ({ ...current, [name]: value }));
-  }
+  function updateRegister(name, value) { setRegisterForm((c) => ({ ...c, [name]: value })); }
+  function updateCompany(name, value) { setCompanyForm((c) => ({ ...c, [name]: value })); }
+  function updateInstitution(name, value) { setInstitutionForm((c) => ({ ...c, [name]: value })); }
 
   return (
     <main className="auth-layout">
       <section className="auth-hero">
-        <div className="product-hero">
-          <img src="/assets/happycoin-logo.png" alt="Logo Happy Coin" />
-        </div>
+        <PenguinCanvas />
       </section>
 
       <section className="auth-card">
         {mode === "choice" ? (
-          <div className="auth-choice">
-            <div className="auth-heading">
-              <p className="eyebrow brand-wordmark" aria-label="HappyCoin">
+          <div className="auth-form-page">
+            <div className="auth-form-header">
+              <p className="auth-form-logo" aria-label="HappyCoin">
                 <span className="brand-happy">Happy</span><span className="brand-coin">Coin</span>
               </p>
-              <h2>Como deseja acessar?</h2>
+              <p className="auth-form-subtitle">moedas que recompensam seu esforço acadêmico</p>
             </div>
             <div className="auth-choice-actions">
-              <button className="auth-choice-button" type="button" onClick={() => setMode("login")}>
-                <strong>Entrar</strong>
-                <span>Aluno, empresa ou instituicao</span>
+              <button className="auth-choice-primary" type="button" onClick={() => goTo("login")}>
+                Entrar
               </button>
-              <button className="auth-choice-button" type="button" onClick={() => setMode("register")}>
-                <strong>Criar conta aluno</strong>
-                <span>Cadastro de estudante</span>
+              <div className="auth-choice-divider"><span>ou</span></div>
+              <p className="auth-choice-prompt">Novo por aqui?</p>
+              <button className="auth-choice-secondary" type="button" onClick={() => goTo("register")}>
+                Criar conta de aluno
               </button>
-              <button className="auth-choice-button" type="button" onClick={() => setMode("company")}>
-                <strong>Criar conta empresa</strong>
-                <span>Cadastro de parceiro</span>
+              <button className="auth-choice-secondary" type="button" onClick={() => goTo("company")}>
+                Cadastrar empresa parceira
               </button>
-              <button className="auth-choice-button" type="button" onClick={() => setMode("institution")}>
-                <strong>Criar conta instituicao</strong>
-                <span>Cadastro institucional</span>
+              <button className="auth-choice-secondary" type="button" onClick={() => goTo("institution")}>
+                Cadastrar instituição
               </button>
             </div>
           </div>
+
+        ) : mode === "login" ? (
+          <div className="auth-form-page">
+            <div className="auth-form-header">
+              <p className="auth-form-logo" aria-label="HappyCoin">
+                <span className="brand-happy">Happy</span><span className="brand-coin">Coin</span>
+              </p>
+              <h1 className="auth-form-title">Entrar</h1>
+              <p className="auth-form-subtitle">bem-vindo de volta à sua conta</p>
+            </div>
+            <form onSubmit={handleLogin}>
+              <div className="auth-form-card">
+                <label className="auth-field">
+                  <span>Email</span>
+                  <input type="email" placeholder="seu@email.com" value={loginForm.email} onChange={(e) => setLoginForm((c) => ({ ...c, email: e.target.value }))} required />
+                </label>
+                <label className="auth-field">
+                  <span>Senha</span>
+                  <div className="auth-pass-wrap">
+                    <input type={showPass ? "text" : "password"} placeholder="••••••••" value={loginForm.senha} onChange={(e) => setLoginForm((c) => ({ ...c, senha: e.target.value }))} required />
+                    <button type="button" className="auth-pass-eye" onClick={() => setShowPass((v) => !v)} tabIndex={-1}>
+                      {showPass ? <EyeOff /> : <Eye />}
+                    </button>
+                  </div>
+                </label>
+                <button className="auth-choice-primary" type="submit" disabled={submitting}>
+                  {submitting ? "Entrando..." : "Entrar"}
+                </button>
+              </div>
+            </form>
+            <p className="auth-form-footer">
+              Não tem uma conta?{" "}
+              <button type="button" onClick={() => goTo("choice")}>Criar conta</button>
+            </p>
+          </div>
+
         ) : mode === "register" ? (
-          <form className="auth-form" onSubmit={handleRegister}>
-            <button className="auth-back" type="button" onClick={() => setMode("choice")}>
-              Voltar
-            </button>
-            <div className="auth-heading">
-              <p className="eyebrow">Aluno</p>
-              <h2>Crie sua conta</h2>
+          <div className="auth-form-page">
+            <div className="auth-form-header">
+              <p className="auth-form-logo" aria-label="HappyCoin">
+                <span className="brand-happy">Happy</span><span className="brand-coin">Coin</span>
+              </p>
+              <h1 className="auth-form-title">Criar conta</h1>
+              <p className="auth-form-subtitle">cadastro de aluno</p>
             </div>
-            <label>
-              Nome completo
-              <input value={registerForm.nome} onChange={(event) => updateRegister("nome", event.target.value)} required />
-            </label>
-            <label>
-              Email
-              <input type="email" value={registerForm.email} onChange={(event) => updateRegister("email", event.target.value)} required />
-            </label>
-            <label>
-              CPF
-              <input inputMode="numeric" maxLength="11" minLength="11" pattern="\d{11}" value={registerForm.cpf} onChange={(event) => updateRegister("cpf", onlyDigits(event.target.value).slice(0, 11))} required />
-            </label>
-            <label>
-              RG
-              <input inputMode="numeric" maxLength="9" minLength="9" pattern="\d{9}" value={registerForm.rg} onChange={(event) => updateRegister("rg", onlyDigits(event.target.value).slice(0, 9))} required />
-            </label>
-            <label>
-              Endereco
-              <input value={registerForm.endereco} onChange={(event) => updateRegister("endereco", event.target.value)} required />
-            </label>
-            <label>
-              Instituicao de ensino
-              <select value={registerForm.instituicao} onChange={(event) => updateRegister("instituicao", event.target.value)} required>
-                <option value="">Selecione</option>
-                {institutions.map((institution) => (
-                  <option key={institution} value={institution}>{institution}</option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Curso
-              <select value={registerForm.curso} onChange={(event) => updateRegister("curso", event.target.value)} required>
-                <option value="">Selecione</option>
-                {courses.map((course) => (
-                  <option key={course} value={course}>{course}</option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Senha
-              <input type="password" pattern="(?=.*[A-Za-z])(?=.*\d).{6,}" placeholder="Letras e numeros" value={registerForm.senha} onChange={(event) => updateRegister("senha", event.target.value)} required />
-            </label>
-            <button className="button button-primary" type="submit" disabled={submitting}>
-              {submitting ? "Criando..." : "Criar e entrar"}
-            </button>
-          </form>
+            <form onSubmit={handleRegister}>
+              <div className="auth-form-card">
+                <label className="auth-field">
+                  <span>Nome completo</span>
+                  <input value={registerForm.nome} onChange={(e) => updateRegister("nome", e.target.value)} required />
+                </label>
+                <label className="auth-field">
+                  <span>Email</span>
+                  <input type="email" value={registerForm.email} onChange={(e) => updateRegister("email", e.target.value)} required />
+                </label>
+                <div className="auth-field-row">
+                  <label className="auth-field">
+                    <span>CPF</span>
+                    <input inputMode="numeric" maxLength="11" minLength="11" pattern="\d{11}" placeholder="00000000000" value={registerForm.cpf} onChange={(e) => updateRegister("cpf", onlyDigits(e.target.value).slice(0, 11))} required />
+                  </label>
+                  <label className="auth-field">
+                    <span>RG</span>
+                    <input inputMode="numeric" maxLength="9" minLength="9" pattern="\d{9}" placeholder="000000000" value={registerForm.rg} onChange={(e) => updateRegister("rg", onlyDigits(e.target.value).slice(0, 9))} required />
+                  </label>
+                </div>
+                <label className="auth-field">
+                  <span>Endereço</span>
+                  <input value={registerForm.endereco} onChange={(e) => updateRegister("endereco", e.target.value)} required />
+                </label>
+                <label className="auth-field">
+                  <span>Instituição de ensino</span>
+                  <select value={registerForm.instituicao} onChange={(e) => updateRegister("instituicao", e.target.value)} required>
+                    <option value="">Selecione</option>
+                    {institutions.map((i) => <option key={i} value={i}>{i}</option>)}
+                  </select>
+                </label>
+                <label className="auth-field">
+                  <span>Curso</span>
+                  <select value={registerForm.curso} onChange={(e) => updateRegister("curso", e.target.value)} required>
+                    <option value="">Selecione</option>
+                    {courses.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </label>
+                <label className="auth-field">
+                  <span>Senha</span>
+                  <div className="auth-pass-wrap">
+                    <input type={showPass ? "text" : "password"} pattern="(?=.*[A-Za-z])(?=.*\d).{6,}" placeholder="Letras e números" value={registerForm.senha} onChange={(e) => updateRegister("senha", e.target.value)} required />
+                    <button type="button" className="auth-pass-eye" onClick={() => setShowPass((v) => !v)} tabIndex={-1}>
+                      {showPass ? <EyeOff /> : <Eye />}
+                    </button>
+                  </div>
+                </label>
+                <button className="auth-choice-primary" type="submit" disabled={submitting}>
+                  {submitting ? "Criando..." : "Criar e entrar"}
+                </button>
+              </div>
+            </form>
+            <p className="auth-form-footer">
+              Já tem uma conta?{" "}
+              <button type="button" onClick={() => goTo("login")}>Entrar</button>
+            </p>
+          </div>
+
         ) : mode === "company" ? (
-          <form className="auth-form" onSubmit={handleCompanyRegister}>
-            <button className="auth-back" type="button" onClick={() => setMode("choice")}>
-              Voltar
-            </button>
-            <div className="auth-heading">
-              <p className="eyebrow">Empresa parceira</p>
-              <h2>Cadastre sua empresa</h2>
+          <div className="auth-form-page">
+            <div className="auth-form-header">
+              <p className="auth-form-logo" aria-label="HappyCoin">
+                <span className="brand-happy">Happy</span><span className="brand-coin">Coin</span>
+              </p>
+              <h1 className="auth-form-title">Cadastrar empresa</h1>
+              <p className="auth-form-subtitle">cadastro de empresa parceira</p>
             </div>
-            <label>
-              Nome fantasia
-              <input value={companyForm.nomeFantasia} onChange={(event) => updateCompany("nomeFantasia", event.target.value)} required />
-            </label>
-            <label>
-              CNPJ
-              <input inputMode="numeric" maxLength="14" minLength="14" pattern="\d{14}" value={companyForm.cnpj} onChange={(event) => updateCompany("cnpj", onlyDigits(event.target.value).slice(0, 14))} required />
-            </label>
-            <label>
-              Email
-              <input type="email" value={companyForm.email} onChange={(event) => updateCompany("email", event.target.value)} required />
-            </label>
-            <label>
-              Senha
-              <input type="password" pattern="(?=.*[A-Za-z])(?=.*\d).{6,}" placeholder="Letras e numeros" value={companyForm.senha} onChange={(event) => updateCompany("senha", event.target.value)} required />
-            </label>
-            <button className="button button-primary" type="submit" disabled={submitting}>
-              {submitting ? "Cadastrando..." : "Cadastrar empresa"}
-            </button>
-          </form>
+            <form onSubmit={handleCompanyRegister}>
+              <div className="auth-form-card">
+                <label className="auth-field">
+                  <span>Nome fantasia</span>
+                  <input value={companyForm.nomeFantasia} onChange={(e) => updateCompany("nomeFantasia", e.target.value)} required />
+                </label>
+                <label className="auth-field">
+                  <span>CNPJ</span>
+                  <input inputMode="numeric" maxLength="14" minLength="14" pattern="\d{14}" placeholder="00000000000000" value={companyForm.cnpj} onChange={(e) => updateCompany("cnpj", onlyDigits(e.target.value).slice(0, 14))} required />
+                </label>
+                <label className="auth-field">
+                  <span>Email</span>
+                  <input type="email" value={companyForm.email} onChange={(e) => updateCompany("email", e.target.value)} required />
+                </label>
+                <label className="auth-field">
+                  <span>Senha</span>
+                  <div className="auth-pass-wrap">
+                    <input type={showPass ? "text" : "password"} pattern="(?=.*[A-Za-z])(?=.*\d).{6,}" placeholder="Letras e números" value={companyForm.senha} onChange={(e) => updateCompany("senha", e.target.value)} required />
+                    <button type="button" className="auth-pass-eye" onClick={() => setShowPass((v) => !v)} tabIndex={-1}>
+                      {showPass ? <EyeOff /> : <Eye />}
+                    </button>
+                  </div>
+                </label>
+                <button className="auth-choice-primary" type="submit" disabled={submitting}>
+                  {submitting ? "Cadastrando..." : "Cadastrar empresa"}
+                </button>
+              </div>
+            </form>
+            <p className="auth-form-footer">
+              Já tem uma conta?{" "}
+              <button type="button" onClick={() => goTo("login")}>Entrar</button>
+            </p>
+          </div>
+
         ) : mode === "institution" ? (
-          <form className="auth-form" onSubmit={handleInstitutionRegister}>
-            <button className="auth-back" type="button" onClick={() => setMode("choice")}>
-              Voltar
-            </button>
-            <div className="auth-heading">
-              <p className="eyebrow">Instituicao</p>
-              <h2>Cadastre a instituicao</h2>
+          <div className="auth-form-page">
+            <div className="auth-form-header">
+              <p className="auth-form-logo" aria-label="HappyCoin">
+                <span className="brand-happy">Happy</span><span className="brand-coin">Coin</span>
+              </p>
+              <h1 className="auth-form-title">Cadastrar instituição</h1>
+              <p className="auth-form-subtitle">cadastro institucional</p>
             </div>
-            <label>
-              Nome da instituicao
-              <input value={institutionForm.nome} onChange={(event) => updateInstitution("nome", event.target.value)} required />
-            </label>
-            <label>
-              Email
-              <input type="email" value={institutionForm.email} onChange={(event) => updateInstitution("email", event.target.value)} required />
-            </label>
-            <label>
-              Telefone
-              <input value={institutionForm.telefone} onChange={(event) => updateInstitution("telefone", onlyDigits(event.target.value).slice(0, 11))} required />
-            </label>
-            <label>
-              Endereco
-              <input value={institutionForm.endereco} onChange={(event) => updateInstitution("endereco", event.target.value)} required />
-            </label>
-            <label>
-              Identificador institucional
-              <input inputMode="numeric" maxLength="14" minLength="14" pattern="\d{14}" value={institutionForm.identificadorInstitucional} onChange={(event) => updateInstitution("identificadorInstitucional", onlyDigits(event.target.value).slice(0, 14))} required />
-            </label>
-            <label>
-              Senha
-              <input type="password" value={institutionForm.senha} onChange={(event) => updateInstitution("senha", event.target.value)} required />
-            </label>
-            <button className="button button-primary" type="submit" disabled={submitting}>
-              {submitting ? "Criando..." : "Criar instituicao"}
-            </button>
-          </form>
-        ) : (
-          <form className="auth-form" onSubmit={handleLogin}>
-            <button className="auth-back" type="button" onClick={() => setMode("choice")}>
-              Voltar
-            </button>
-            <div className="auth-heading">
-              <p className="eyebrow">Aluno, empresa ou instituicao</p>
-              <h2>Acesse sua conta</h2>
-            </div>
-            <label>
-              Email
-              <input type="email" value={loginForm.email} onChange={(event) => setLoginForm((current) => ({ ...current, email: event.target.value }))} required />
-            </label>
-            <label>
-              Senha
-              <input type="password" value={loginForm.senha} onChange={(event) => setLoginForm((current) => ({ ...current, senha: event.target.value }))} required />
-            </label>
-            <button className="button button-primary" type="submit" disabled={submitting}>
-              {submitting ? "Entrando..." : "Entrar"}
-            </button>
-          </form>
-        )}
+            <form onSubmit={handleInstitutionRegister}>
+              <div className="auth-form-card">
+                <label className="auth-field">
+                  <span>Nome da instituição</span>
+                  <input value={institutionForm.nome} onChange={(e) => updateInstitution("nome", e.target.value)} required />
+                </label>
+                <label className="auth-field">
+                  <span>Email</span>
+                  <input type="email" value={institutionForm.email} onChange={(e) => updateInstitution("email", e.target.value)} required />
+                </label>
+                <label className="auth-field">
+                  <span>Telefone</span>
+                  <input value={institutionForm.telefone} onChange={(e) => updateInstitution("telefone", onlyDigits(e.target.value).slice(0, 11))} required />
+                </label>
+                <label className="auth-field">
+                  <span>Endereço</span>
+                  <input value={institutionForm.endereco} onChange={(e) => updateInstitution("endereco", e.target.value)} required />
+                </label>
+                <label className="auth-field">
+                  <span>Identificador institucional (CNPJ)</span>
+                  <input inputMode="numeric" maxLength="14" minLength="14" pattern="\d{14}" placeholder="00000000000000" value={institutionForm.identificadorInstitucional} onChange={(e) => updateInstitution("identificadorInstitucional", onlyDigits(e.target.value).slice(0, 14))} required />
+                </label>
+                <label className="auth-field">
+                  <span>Senha</span>
+                  <input type="password" value={institutionForm.senha} onChange={(e) => updateInstitution("senha", e.target.value)} required />
+                </label>
+                <button className="auth-choice-primary" type="submit" disabled={submitting}>
+                  {submitting ? "Criando..." : "Criar instituição"}
+                </button>
+              </div>
+            </form>
+            <p className="auth-form-footer">
+              Já tem uma conta?{" "}
+              <button type="button" onClick={() => goTo("login")}>Entrar</button>
+            </p>
+          </div>
+
+        ) : null}
+        <DevLogin onLogin={onLogin} />
       </section>
     </main>
+  );
+}
+
+function Eye() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function EyeOff() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+      <line x1="1" y1="1" x2="23" y2="23" />
+    </svg>
   );
 }
 

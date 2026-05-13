@@ -5,10 +5,13 @@ import br.com.emoney.dto.ProfessorResponse;
 import br.com.emoney.dto.RegisterInstitutionRequest;
 import br.com.emoney.dto.RegisterProfessorRequest;
 import br.com.emoney.dto.SemesterStartResponse;
+import br.com.emoney.dto.StudentResponse;
+import br.com.emoney.dto.UpdateInstitutionRequest;
 import br.com.emoney.model.Institution;
 import br.com.emoney.model.Professor;
 import br.com.emoney.repository.InstitutionRepository;
 import br.com.emoney.repository.ProfessorRepository;
+import br.com.emoney.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -24,9 +28,12 @@ public class InstitutionService {
     private final ProfessorRepository professorRepository;
     private final ValidationService validationService;
 
-    public InstitutionService(InstitutionRepository institutionRepository, ProfessorRepository professorRepository, ValidationService validationService) {
+    private final StudentRepository studentRepository;
+
+    public InstitutionService(InstitutionRepository institutionRepository, ProfessorRepository professorRepository, StudentRepository studentRepository, ValidationService validationService) {
         this.institutionRepository = institutionRepository;
         this.professorRepository = professorRepository;
+        this.studentRepository = studentRepository;
         this.validationService = validationService;
     }
 
@@ -125,6 +132,56 @@ public class InstitutionService {
     public InstitutionResponse findById(UUID institutionId) {
         Institution institution = findEntityById(institutionId);
         return new InstitutionResponse(institution, listProfessors(institutionId));
+    }
+
+    public InstitutionResponse update(UUID institutionId, UpdateInstitutionRequest request) {
+        Institution institution = findEntityById(institutionId);
+
+        if (request.getNome() != null && !request.getNome().isBlank()) {
+            institution.setNome(validationService.text(request.getNome(), "Nome da instituicao"));
+        }
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            String email = request.getEmail().toLowerCase();
+            institutionRepository.findByEmail(email).ifPresent(existing -> {
+                if (!existing.getId().equals(institutionId)) {
+                    throw new ResponseStatusException(CONFLICT, "Ja existe instituicao com este email.");
+                }
+            });
+            institution.setEmail(email);
+        }
+        if (request.getSenha() != null && !request.getSenha().isBlank()) {
+            institution.setSenha(validationService.senha(request.getSenha()));
+        }
+        if (request.getTelefone() != null && !request.getTelefone().isBlank()) {
+            institution.setTelefone(validationService.text(request.getTelefone(), "Telefone"));
+        }
+        if (request.getEndereco() != null && !request.getEndereco().isBlank()) {
+            institution.setEndereco(validationService.text(request.getEndereco(), "Endereco"));
+        }
+
+        Institution saved = institutionRepository.save(institution);
+        return new InstitutionResponse(saved, listProfessors(institutionId));
+    }
+
+    public void deleteProfessor(UUID institutionId, UUID professorId) {
+        Institution institution = findEntityById(institutionId);
+        Professor professor = professorRepository.findById(professorId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Professor nao encontrado."));
+
+        if (!institutionId.equals(professor.getInstitutionId())) {
+            throw new ResponseStatusException(FORBIDDEN, "Professor nao pertence a esta instituicao.");
+        }
+
+        professorRepository.delete(professor);
+        institution.getProfessores().remove(professorId);
+        institutionRepository.save(institution);
+    }
+
+    public List<StudentResponse> listStudents(UUID institutionId) {
+        findEntityById(institutionId);
+        return studentRepository.findByInstitutionId(institutionId).stream()
+                .map(StudentResponse::new)
+                .toList();
     }
 
     public List<String> listInstitutionNames() {

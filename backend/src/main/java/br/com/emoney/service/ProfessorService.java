@@ -2,6 +2,7 @@ package br.com.emoney.service;
 
 import br.com.emoney.dto.ProfessorResponse;
 import br.com.emoney.dto.TransferCoinsRequest;
+import br.com.emoney.dto.UpdateProfessorRequest;
 import br.com.emoney.model.AuthSession;
 import br.com.emoney.model.CoinTransfer;
 import br.com.emoney.model.Professor;
@@ -71,5 +72,31 @@ public class ProfessorService {
         transferRepository.save(new CoinTransfer(professor.getId(), student.getId(), request.getQuantidade(), motivo));
 
         return new ProfessorResponse(professor);
+    }
+
+    public ProfessorResponse update(java.util.UUID professorId, UpdateProfessorRequest request) {
+        Professor professor = findEntityById(professorId);
+
+        if (request.getNome() != null && !request.getNome().isBlank()) {
+            professor.setNome(validationService.text(request.getNome(), "Nome"));
+        }
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            String email = request.getEmail().toLowerCase();
+            professorRepository.findByEmail(email).ifPresent(existing -> {
+                if (!existing.getId().equals(professorId)) {
+                    throw new ResponseStatusException(
+                        org.springframework.http.HttpStatus.CONFLICT, "Ja existe professor com este email.");
+                }
+            });
+            professor.setEmail(email);
+        }
+        if (request.getSenha() != null && !request.getSenha().isBlank()) {
+            professor.setSenha(validationService.senha(request.getSenha()));
+        }
+        if (request.getCursos() != null && !request.getCursos().isEmpty()) {
+            professor.setCursos(validationService.cursos(request.getCursos()));
+        }
+
+        return new ProfessorResponse(professorRepository.save(professor));
     }
 }

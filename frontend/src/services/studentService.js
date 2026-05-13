@@ -14,9 +14,14 @@ export const studentService = {
   },
 
   updateMe(payload) {
-    return apiRequest("/students/me", {
-      method: "PUT",
-      body: payload,
-    });
+    return apiRequest("/students/me", { method: "PUT", body: payload });
+  },
+
+  transfers() {
+    return apiRequest("/students/me/transfers");
+  },
+
+  purchases() {
+    return apiRequest("/students/me/purchases");
   },
 };

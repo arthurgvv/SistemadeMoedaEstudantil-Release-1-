@@ -19,8 +19,14 @@ export const productService = {
   },
 
   purchase(id) {
-    return apiRequest(`/products/${id}/purchase`, {
-      method: "POST",
-    });
+    return apiRequest(`/products/${id}/purchase`, { method: "POST" });
+  },
+
+  update(id, payload) {
+    return apiRequest(`/products/${id}`, { method: "PUT", body: payload });
+  },
+
+  purchases() {
+    return apiRequest("/products/purchases");
   },
 };

@@ -1,12 +1,15 @@
 package br.com.emoney.service;
 
+import br.com.emoney.dto.ProductPurchaseResponse;
 import br.com.emoney.dto.StudentResponse;
 import br.com.emoney.dto.ProductRequest;
 import br.com.emoney.model.AuthSession;
 import br.com.emoney.model.Company;
 import br.com.emoney.model.Product;
+import br.com.emoney.model.ProductPurchase;
 import br.com.emoney.model.Student;
 import br.com.emoney.model.UserRole;
+import br.com.emoney.repository.ProductPurchaseRepository;
 import br.com.emoney.repository.ProductRepository;
 import br.com.emoney.repository.StudentRepository;
 import org.springframework.stereotype.Service;
@@ -23,12 +26,14 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @Service
 public class ProductService {
     private final ProductRepository productRepository;
+    private final ProductPurchaseRepository purchaseRepository;
     private final StudentRepository studentRepository;
     private final CompanyService companyService;
     private final ValidationService validationService;
 
-    public ProductService(ProductRepository productRepository, StudentRepository studentRepository, CompanyService companyService, ValidationService validationService) {
+    public ProductService(ProductRepository productRepository, ProductPurchaseRepository purchaseRepository, StudentRepository studentRepository, CompanyService companyService, ValidationService validationService) {
         this.productRepository = productRepository;
+        this.purchaseRepository = purchaseRepository;
         this.studentRepository = studentRepository;
         this.companyService = companyService;
         this.validationService = validationService;
@@ -96,6 +101,53 @@ public class ProductService {
         }
 
         student.setSaldoMoedas(student.getSaldoMoedas() - product.getCustoMoedas());
-        return new StudentResponse(studentRepository.save(student));
+        Student saved = studentRepository.save(student);
+
+        purchaseRepository.save(new ProductPurchase(
+                product.getId(),
+                product.getCompanyId(),
+                student.getId(),
+                product.getNome(),
+                student.getNome(),
+                student.getEmail(),
+                product.getCustoMoedas()
+        ));
+
+        return new StudentResponse(saved);
+    }
+
+    public Product update(AuthSession session, UUID productId, ProductRequest request) {
+        if (session.getRole() != UserRole.COMPANY) {
+            throw new ResponseStatusException(FORBIDDEN, "Apenas empresas parceiras podem editar produtos.");
+        }
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Produto nao encontrado."));
+
+        if (product.getCompanyId() == null || !product.getCompanyId().equals(session.getUserId())) {
+            throw new ResponseStatusException(FORBIDDEN, "A empresa so pode editar produtos cadastrados por ela.");
+        }
+
+        if (request.getNome() != null && !request.getNome().isBlank()) {
+            product.setNome(validationService.text(request.getNome(), "Nome do produto"));
+        }
+        if (request.getDescricao() != null && !request.getDescricao().isBlank()) {
+            product.setDescricao(validationService.text(request.getDescricao(), "Descricao"));
+        }
+        if (request.getCustoMoedas() > 0) {
+            product.setCustoMoedas(request.getCustoMoedas());
+        }
+        if (request.getFotoUrl() != null && !request.getFotoUrl().isBlank()) {
+            product.setImageUrl(request.getFotoUrl());
+        }
+
+        return productRepository.save(product);
+    }
+
+    public List<ProductPurchaseResponse> purchasesByCompany(UUID companyId) {
+        return purchaseRepository.findByCompanyIdOrderByCriadoEmDesc(companyId)
+                .stream()
+                .map(ProductPurchaseResponse::new)
+                .toList();
     }
 }

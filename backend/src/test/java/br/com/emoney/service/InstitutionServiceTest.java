@@ -5,6 +5,7 @@ import br.com.emoney.dto.SemesterStartResponse;
 import br.com.emoney.model.Institution;
 import br.com.emoney.repository.InstitutionRepository;
 import br.com.emoney.repository.ProfessorRepository;
+import br.com.emoney.repository.StudentRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -27,10 +28,13 @@ class InstitutionServiceTest {
     @Mock
     private InstitutionRepository institutionRepository;
 
+    @Mock
+    private StudentRepository studentRepository;
+
     @Test
     void registersInstitutionWithoutCreatingProfessorsFromRequest() {
         ValidationService validationService = new ValidationService();
-        InstitutionService institutionService = new InstitutionService(institutionRepository, professorRepository, validationService);
+        InstitutionService institutionService = new InstitutionService(institutionRepository, professorRepository, studentRepository, validationService);
 
         when(institutionRepository.findByEmail(anyString())).thenReturn(Optional.empty());
         when(institutionRepository.existsByIdentificadorInstitucional(anyString())).thenReturn(false);

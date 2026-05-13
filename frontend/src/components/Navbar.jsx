@@ -1,4 +1,4 @@
-function Navbar({ activePage, onChangePage, onLogout, role }) {
+function Navbar({ activePage, onChangePage, onLogout, role, tabs }) {
   return (
     <nav className="navbar">
       <div className="nav-brand">
@@ -9,21 +9,27 @@ function Navbar({ activePage, onChangePage, onLogout, role }) {
       </div>
 
       <div className="nav-actions">
-        {role === "STUDENT" && (
-          <>
-            <button className={activePage === "products" ? "is-active" : ""} type="button" onClick={() => onChangePage("products")}>
-              Produtos
-            </button>
-            <button className={activePage === "account" ? "is-active" : ""} type="button" onClick={() => onChangePage("account")}>
-              Minha conta
-            </button>
-          </>
-        )}
-        {role === "INSTITUTION" && (
-          <button className={activePage === "overview" ? "is-active" : ""} type="button" onClick={() => onChangePage("overview")}>
-            Painel
-          </button>
-        )}
+        {tabs
+          ? tabs.map((tab) => (
+              <button
+                key={tab.key}
+                className={activePage === tab.key ? "is-active" : ""}
+                type="button"
+                onClick={() => onChangePage(tab.key)}
+              >
+                {tab.label}
+              </button>
+            ))
+          : role === "STUDENT" && (
+              <>
+                <button className={activePage === "products" ? "is-active" : ""} type="button" onClick={() => onChangePage("products")}>
+                  Produtos
+                </button>
+                <button className={activePage === "account" ? "is-active" : ""} type="button" onClick={() => onChangePage("account")}>
+                  Minha conta
+                </button>
+              </>
+            )}
         <button type="button" onClick={onLogout}>Sair</button>
       </div>
     </nav>

@@ -2,6 +2,7 @@ package br.com.emoney.service;
 
 import br.com.emoney.dto.CompanyResponse;
 import br.com.emoney.dto.RegisterCompanyRequest;
+import br.com.emoney.dto.UpdateCompanyRequest;
 import br.com.emoney.model.Company;
 import br.com.emoney.repository.CompanyRepository;
 import org.springframework.stereotype.Service;
@@ -62,5 +63,27 @@ public class CompanyService {
 
     public CompanyResponse findById(UUID id) {
         return new CompanyResponse(findEntityById(id));
+    }
+
+    public CompanyResponse update(UUID id, UpdateCompanyRequest request) {
+        Company company = findEntityById(id);
+
+        if (request.getNomeFantasia() != null && !request.getNomeFantasia().isBlank()) {
+            company.setNomeFantasia(validationService.text(request.getNomeFantasia(), "Nome fantasia"));
+        }
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            String email = request.getEmail().toLowerCase();
+            companyRepository.findByEmail(email).ifPresent(existing -> {
+                if (!existing.getId().equals(id)) {
+                    throw new ResponseStatusException(CONFLICT, "Ja existe empresa com este email.");
+                }
+            });
+            company.setEmail(email);
+        }
+        if (request.getSenha() != null && !request.getSenha().isBlank()) {
+            company.setSenha(validationService.senha(request.getSenha()));
+        }
+
+        return new CompanyResponse(companyRepository.save(company));
     }
 }

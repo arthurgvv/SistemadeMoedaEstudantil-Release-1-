@@ -68,7 +68,7 @@ function App() {
     ) : auth.role === "INSTITUTION" ? (
       <InstitutionPage user={auth.user} onLogout={auth.logout} onUpdateUser={auth.updateUser} onToast={setToast} />
     ) : auth.role === "COMPANY" ? (
-      <CompanyPage user={auth.user} onLogout={auth.logout} onToast={setToast} />
+      <CompanyPage user={auth.user} onLogout={auth.logout} onUpdateUser={auth.updateUser} onToast={setToast} />
     ) : (
       <StudentPage user={auth.user} onLogout={auth.logout} onUpdateUser={auth.updateUser} onToast={setToast} />
     );

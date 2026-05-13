@@ -11,6 +11,7 @@ public class ProfessorResponse {
     private String cpf;
     private String email;
     private UUID institutionId;
+    private String institutionName;
     private List<String> cursos;
     private int saldoMoedas;
     private String ultimoAviso;
@@ -44,6 +45,14 @@ public class ProfessorResponse {
 
     public UUID getInstitutionId() {
         return institutionId;
+    }
+
+    public String getInstitutionName() {
+        return institutionName;
+    }
+
+    public void setInstitutionName(String institutionName) {
+        this.institutionName = institutionName;
     }
 
     public List<String> getCursos() {

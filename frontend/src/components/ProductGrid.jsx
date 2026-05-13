@@ -1,4 +1,4 @@
-function ProductGrid({ products, walletBalance = 0, purchasingId, onDelete, onPurchase }) {
+function ProductGrid({ products, walletBalance = 0, purchasingId, onDelete, onEdit, onPurchase }) {
   return (
     <section className="products-section">
       <div className="section-heading">
@@ -32,6 +32,11 @@ function ProductGrid({ products, walletBalance = 0, purchasingId, onDelete, onPu
                     onClick={() => onPurchase(product)}
                   >
                     {isPurchasing ? "Comprando..." : "Comprar"}
+                  </button>
+                )}
+                {onEdit && (
+                  <button className="button button-secondary" type="button" onClick={() => onEdit(product)}>
+                    Editar
                   </button>
                 )}
                 {onDelete && (
